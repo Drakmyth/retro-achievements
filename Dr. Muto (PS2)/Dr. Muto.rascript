@@ -1,6 +1,6 @@
 // Dr. Muto
 // #ID = 20813
-// #MinimumVersion = 1.3.1
+// #MinimumVersion=1.3.1
 
 planets = {
     "lab": "The Lab",
@@ -206,6 +206,8 @@ function reveal_time_remaining() => float(0x2bac44)
 function menu_is_open() => dword(0x2babdc) == 0x1
 function transloader_is_open() => dword(0x2babec)
 function active_menu() => dword(0x3a5058)
+function is_on_any_menu() => active_menu() != 0x0
+function is_on_menu(menu) => active_menu_type() == menu
 function active_menu_state() => byte(active_menu())
 function active_menu_type() => byte(active_menu() + 0x20)
 function active_menu_is_ready() => bit1(active_menu()) == 0x1
@@ -257,7 +259,7 @@ function achievement_video(title, description, videopath, triggerframe, points, 
         points = points,
         type = type,
         trigger = is_game_active() &&
-                  active_menu() == 0x0 &&
+                  !is_on_any_menu() &&
                   between_levels() &&
                   cheat_protection([CHEAT_INVINCIBLE, CHEAT_NODAMAGE]) &&
                   is_video_playing() &&
@@ -286,14 +288,14 @@ function discovery_ignore_prompt(prompt) {
 function discovery_open_menu(menu, prompt) {
     return once(prev(reveal_prompt()) == prompt && reveal_prompt() == PROMPT_NONE) &&
            menu_is_open() &&
-           active_menu_type() == menu &&
+           is_on_menu(menu) &&
            active_menu_is_ready() &&
            active_menu_allows_player_input()
 }
 
 function discovery_edgecases() {
-    return (transloader_is_open() == 1 && active_menu_type() == MENU_READYTOSAVE) ||
-           (menu_is_open() && active_menu_type() == MENU_QUIT)
+    return (transloader_is_open() == 1 && is_on_menu(MENU_READYTOSAVE)) ||
+           (menu_is_open() && is_on_menu(MENU_QUIT))
 }
 
 function achievement_discovery(title, description, isotope_count, menu, points) {
@@ -492,7 +494,7 @@ function genitor_boss(level) {
     frame_trigger = bosses[level][IDX_GENITORFRAME]
     return between_levels() &&
            is_video_playing() &&
-           active_menu() == 0x0 &&
+           !is_on_any_menu() &&
            video_path_equals(bosses[level][IDX_VIDEOPATH]) &&
            prior(genitor()) == 16 && measured(genitor() == 17, when=is_game_active() && 
                                                                     prev(video_elapsed()) < frame_trigger && video_elapsed() >= frame_trigger &&
@@ -639,7 +641,7 @@ achievement(
     title = "RA Fun",
     description = "Try to enable the RALIBRETRO cheat",
     points = 0,
-    trigger = menu_is_open() && active_menu_type() == MENU_CHEATS &&
+    trigger = menu_is_open() && is_on_menu(MENU_CHEATS) &&
               !prev_entered_cheat_is("RALIBRETRO") && entered_cheat_is("RALIBRETRO")
 )
 
@@ -666,7 +668,7 @@ function start_boss_leaderboard(bosslevel) {
 
 function cancel_boss_leaderboard(bosslevel) {
     return any_cheats_enabled([CHEAT_INVINCIBLE, CHEAT_NODAMAGE]) ||
-           active_menu() == MENU_TITLE
+           is_on_menu(MENU_TITLE)
 }
 
 function submit_boss_leaderboard(bosslevel) {
@@ -674,7 +676,7 @@ function submit_boss_leaderboard(bosslevel) {
 }
 
 function value_boss_leaderboard() {
-    return always_true()
+    return unless(is_on_any_menu() || is_reloading()) && measured(tally(0, always_true()))
 }
 
 function leaderboard_boss(title, description, bosslevel) {
@@ -684,6 +686,8 @@ function leaderboard_boss(title, description, bosslevel) {
 
 leaderboard_boss("Beat Vinny", "Beat Vinny in the fastest time", T_BOSS)
 leaderboard_boss("Beat Carla", "Beat Carla in the fastest time", A_BOSS)
+leaderboard_boss("Beat Steele", "Beat Steele in the fastest time", F_BOSS)
+leaderboard_boss("Beat Burnital", "Beat Burnital in the fastest time", M_BOSS)
 
 function get_format_str(length, start) {                                                                                     
     format_str = ""
