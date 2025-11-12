@@ -2,14 +2,7 @@
 // #ID = 20813
 // #MinimumVersion=1.3.1
 
-planets = {
-    "lab": "The Lab",
-    "totltec": "Totltec",
-    "aqeum": "Aqeum",
-    "flotos": "Flotos",
-    "mazon": "Mazon"
-}
-
+L_LABRED = "labred"
 L_LAB = "lab1"
 T_JUNKYARD = "tl1s"
 T_VATS = "tl2s"
@@ -38,7 +31,7 @@ PROMPT_BLUEPRINT = 1
 PROMPT_FORMULA = 2
 
 MENU_TITLE = 0x01
-MENU_MOVIES = 0x03
+MENU_CREDITS = 0x05
 MENU_CHEATS = 0x0b
 MENU_PAUSE = 0x0c
 MENU_GENITOR = 0x0f
@@ -46,6 +39,11 @@ MENU_BLUEPRINTS = 0x10
 MENU_FORMULAS = 0x11
 MENU_QUIT = 0x12
 MENU_READYTOSAVE = 0x1c
+
+TITLE_MENUS = [MENU_TITLE, 0x02]
+OPTIONS_MENUS = [0x06, 0x08, 0x09, 0x0a]
+LOADING_MENUS = [0x14, 0x15, 0x17, 0x18, 0x19, 0x1a]
+MOVIES_MENUS = [0x03, 0x04]
 
 MORPH_DOC = 0
 MORPH_MOUSE = 1
@@ -170,6 +168,7 @@ function tarfish_dna() => byte(0x3a3e9e)
 function airbag_dna() => byte(0x3a3e9f)
 function peliqui_dna() => byte(0x3a3ea0)
 function bantra_dna() => byte(0x3a3ea1)
+function dna() => roach_dna() + fireant_dna() + monkey_dna() + chark_dna() + tarfish_dna() + airbag_dna() + peliqui_dna() + bantra_dna()
 
 function current_health() => byte(0x2c7260)
 function max_health() => byte(0x2ee794)
@@ -207,7 +206,8 @@ function menu_is_open() => dword(0x2babdc) == 0x1
 function transloader_is_open() => dword(0x2babec)
 function active_menu() => dword(0x3a5058)
 function is_on_any_menu() => active_menu() != 0x0
-function is_on_menu(menu) => active_menu_type() == menu
+function is_on_menu(menu) => is_on_any_menu() && active_menu_type() == menu
+function is_on_menu_set(menus) => any_of(menus, x => is_on_menu(x))
 function active_menu_state() => byte(active_menu())
 function active_menu_type() => byte(active_menu() + 0x20)
 function active_menu_is_ready() => bit1(active_menu()) == 0x1
@@ -680,8 +680,16 @@ function value_boss_leaderboard() {
 }
 
 function leaderboard_boss(title, description, bosslevel) {
-    leaderboard(title, description, start_boss_leaderboard(bosslevel), cancel_boss_leaderboard(bosslevel), submit_boss_leaderboard(bosslevel),
-        value_boss_leaderboard(), format="FRAMES", lower_is_better=true)    
+    leaderboard(
+        title = title,
+        description = description,
+        start  = start_boss_leaderboard(bosslevel),
+        cancel = cancel_boss_leaderboard(bosslevel),
+        submit = submit_boss_leaderboard(bosslevel),
+        value  = value_boss_leaderboard(),
+        format = "FRAMES",
+        lower_is_better = true
+    )
 }
 
 leaderboard_boss("Beat Vinny", "Beat Vinny in the fastest time", T_BOSS)
@@ -712,7 +720,63 @@ function get_str_rp_array(addr, length) {
 area_format = get_format_str(8, 1)
 area_chars = get_str_rp_array(area_id(), 8)
 
+Planets = {
+    "lab": "in the Lab",
+    "totltec": "on Totltec",
+    "aqeum": "on Aqeum",
+    "flotos": "on Flotos",
+    "mazon": "on Mazon"
+}
+
+Morph = {
+    MORPH_DOC: "🧑‍⚕️",
+    MORPH_MOUSE: "🐁",
+    MORPH_GORILLA: "🦍",
+    MORPH_FISH: "🐟",
+    MORPH_SQUIRREL: "🐿️",
+    MORPH_SPIDER: "🕷️",
+    MORPH_FLY: "🪰",
+}
+
+rp_planet = rich_presence_ascii_string_lookup("Planet", planet_name(), Planets, fallback="somewhere they're not supposed to be")
+rp_morph = rich_presence_lookup("Morph", current_morph(), Morph, fallback="👨‍⚕️")
+rp_terra = rich_presence_value("Terra", terra(), "VALUE")
+rp_isotopes = rich_presence_value("Isotopes", isotopes(), "VALUE")
+rp_genitor = rich_presence_value("Genitor", genitor(), "VALUE")
+rp_dna = rich_presence_value("Dna", dna(), "VALUE")
+
+// Flotos Sphere
+// Flotos Cube
+// Flotos Furnace
+// Flotos Jupiter City
+// Steele
+// Mazon Workshop
+// Burnital
+// Ending 1
+// Ending 2
+
+rich_presence_conditional_display(is_on_menu_set(TITLE_MENUS), "Admiring the Title Screen")
+rich_presence_conditional_display(is_on_menu_set(OPTIONS_MENUS), "Tweaking settings")
+rich_presence_conditional_display(is_on_menu(MENU_CHEATS), "Thinking about being naughty")
+rich_presence_conditional_display(is_on_menu_set(MOVIES_MENUS), "Watching some movies")
+rich_presence_conditional_display(is_on_menu(MENU_CREDITS), "Honoring some awesome people!")
+rich_presence_conditional_display(is_on_menu_set(LOADING_MENUS), "Picking up where they left off")
+rich_presence_conditional_display(is_reloading(), "Learning from their mistake | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/257", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+rich_presence_conditional_display(between_levels(), "Transloading | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/257", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+rich_presence_conditional_display(is_video_playing() && video_path_equals("/movies/start.fmav"), "Brainstorming a solution {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/257", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+rich_presence_conditional_display(on_level(L_LABRED), "Preventing a meltdown {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/257", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+rich_presence_conditional_display(on_level(L_LAB), "Wasting time {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/257", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+rich_presence_conditional_display(on_level(T_JUNKYARD), "Rumaging through the Junkyard {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/257", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+rich_presence_conditional_display(on_level(T_VATS), "Draining the Vats {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/257", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+rich_presence_conditional_display(on_level(T_FACTORY), "Disrupting production in the Factory {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/257", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+rich_presence_conditional_display(on_level(T_BOSS), "Teaching Vinny a lesson {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/257", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+rich_presence_conditional_display(on_level(A_LAGOON), "Bobbing along in the Lagoon {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/257", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+rich_presence_conditional_display(on_level(A_OILRIG), "Sabotaging the Oil Rig {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/257", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+rich_presence_conditional_display(on_level(A_HYDROSTATION), "Hugging cave walls in the Hydro Station {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/257", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+rich_presence_conditional_display(on_level(A_WATERWORKS), "Overloading turbines in the Water Works {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/257", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+rich_presence_conditional_display(on_level(A_BOSS), "Playing in Carla's pond {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/257", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+
 rich_presence_display("{0} - " + area_format,
-                      rich_presence_ascii_string_lookup("Planet", planet_name(), planets),
+                      rp_planet,
                       area_chars[0], area_chars[1], area_chars[2], area_chars[3],
                       area_chars[4], area_chars[5], area_chars[6], area_chars[7])
