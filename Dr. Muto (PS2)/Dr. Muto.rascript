@@ -753,9 +753,6 @@ rp_isotopes = rich_presence_value("Isotopes", isotopes(), "VALUE")
 rp_genitor = rich_presence_value("Genitor", genitor(), "VALUE")
 rp_dna = rich_presence_value("Dna", dna(), "VALUE")
 
-// Ending 1
-// Ending 2
-
 rich_presence_conditional_display(is_on_menu_set(TITLE_MENUS), "Admiring the Title Screen")
 // on_any_level() on these protects from being on the title screen after good ending
 rich_presence_conditional_display(is_game_active() && on_any_level() && is_on_menu_set(OPTIONS_MENUS), "Tweaking settings {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
@@ -769,6 +766,8 @@ rich_presence_conditional_display(is_on_menu(MENU_CREDITS), "Honoring some aweso
 rich_presence_conditional_display(is_on_menu_set(LOADING_MENUS), "Picking up where they left off")
 rich_presence_conditional_display(is_on_menu_set(SAVING_MENUS), "Recording their progress {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
 rich_presence_conditional_display(is_video_playing(VIDEO_START), "Brainstorming a solution {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+rich_presence_conditional_display(is_video_playing(VIDEO_ENDING1), "Celebrating prematurely | {0} | 🌎 {1}/86 ⚛️ {2}/4232 🛰 {3}/17 🧬 {4}/258", rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+rich_presence_conditional_display(is_video_playing(VIDEO_ENDING2), "\"Relaxing\" on the beach | 🪰 | 🌎 {0}/86 ⚛️ {1}/4232 🛰 {2}/17 🧬 {3}/258", rp_terra, rp_isotopes, rp_genitor, rp_dna)
 rich_presence_conditional_display(is_reloading(), "Learning from their mistakes {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
 rich_presence_conditional_display(is_loading(), "Transloading | {0} | 🌎 {1}/86 ⚛️ {2}/4232 🛰 {3}/17 🧬 {4}/258", rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
 rich_presence_conditional_display(on_level(F_BOSS), "Infesting Steele's ship with fleas {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
