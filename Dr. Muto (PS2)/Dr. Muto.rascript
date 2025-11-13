@@ -42,7 +42,8 @@ MENU_READYTOSAVE = 0x1c
 
 TITLE_MENUS = [MENU_TITLE, 0x02]
 OPTIONS_MENUS = [0x06, 0x08, 0x09, 0x0a]
-LOADING_MENUS = [0x14, 0x15, 0x17, 0x18, 0x19, 0x1a]
+LOADING_MENUS = [0x17, 0x18, 0x19, 0x1a]
+SAVING_MENUS = [0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x25, 0x2a]
 MOVIES_MENUS = [0x03, 0x04]
 COLLECTION_MENUS = [0x0d, 0x0e, MENU_GENITOR, MENU_BLUEPRINTS, MENU_FORMULAS]
 
@@ -746,7 +747,6 @@ rp_isotopes = rich_presence_value("Isotopes", isotopes(), "VALUE")
 rp_genitor = rich_presence_value("Genitor", genitor(), "VALUE")
 rp_dna = rich_presence_value("Dna", dna(), "VALUE")
 
-// Saving game
 // Ending 1
 // Ending 2
 
@@ -761,6 +761,7 @@ rich_presence_conditional_display(is_on_menu(MENU_CHEATS), "Thinking about being
 rich_presence_conditional_display(is_on_menu_set(MOVIES_MENUS), "Watching a movie")
 rich_presence_conditional_display(is_on_menu(MENU_CREDITS), "Honoring some awesome people!")
 rich_presence_conditional_display(is_on_menu_set(LOADING_MENUS), "Picking up where they left off")
+rich_presence_conditional_display(is_on_menu_set(SAVING_MENUS), "Recording their progress {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
 rich_presence_conditional_display(is_video_playing() && video_path_equals("/movies/start.fmav"), "Brainstorming a solution {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
 rich_presence_conditional_display(is_reloading(), "Learning from their mistakes {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
 rich_presence_conditional_display(is_loading(), "Transloading | {0} | 🌎 {1}/86 ⚛️ {2}/4232 🛰 {3}/17 🧬 {4}/258", rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
