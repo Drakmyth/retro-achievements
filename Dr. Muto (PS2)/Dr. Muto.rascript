@@ -60,6 +60,14 @@ GADGET_POCKETROCKET = 1
 GADGET_INVISIBILITY = 2
 GADGET_INVULNERABILITY = 3
 
+VIDEO_START = "/movies/start.fmav"
+VIDEO_VINNEY = "/movies/vinny.fmav"
+VIDEO_CARLA = "/movies/carla.fmav"
+VIDEO_STEELE = "/movies/steele.fmav"
+VIDEO_BURNITAL = "/movies/burnital.fmav"
+VIDEO_ENDING1 = "/movies/ending1.fmav"
+VIDEO_ENDING2 = "/movies/ending2.fmav"
+
 IDX_ISOTOPES = 0
 IDX_TERRA = 1
 IDX_DNA = 2
@@ -88,10 +96,10 @@ IDX_GENITORFRAME = 2
 
 // level: [videopath, triggerframe, genitorframe]
 bosses = {
-    T_BOSS: ["/movies/vinny.fmav", 0x280, 0x300],
-    A_BOSS: ["/movies/carla.fmav", 0x300, 0x3c0],
-    F_BOSS: ["/movies/steele.fmav", 0x4d0, 0x550],
-    M_BOSS: ["/movies/burnital.fmav", 0x6d0, 0x790],    
+    T_BOSS: [VIDEO_VINNEY, 0x280, 0x300],
+    A_BOSS: [VIDEO_CARLA, 0x300, 0x3c0],
+    F_BOSS: [VIDEO_STEELE, 0x4d0, 0x550],
+    M_BOSS: [VIDEO_BURNITAL, 0x6d0, 0x790],    
 }
 
 ENDING_BAD = 1
@@ -99,11 +107,10 @@ ENDING_GOOD = 2
 
 // level: [videopath, triggerframe]
 endings = {
-    // ENDING_BAD's path is actually "/moves/ending1.fmav" but trimming it will make it trigger
-    // when either ending video plays. It's set to trigger one frame after ENDING_GOOD
-    // so the good ending achievement will pop first if you get them both at the same time
+    // ENDING_BAD uses a path prefix to make it trigger when either ending video plays.
+    // It triggers one frame after ENDING_GOOD so it pops second if you get both at the same time.
     ENDING_BAD: ["/movies/ending", 0x61],
-    ENDING_GOOD: ["/movies/ending2.fmav", 0x60],
+    ENDING_GOOD: [VIDEO_ENDING2, 0x60],
 }
 
 morphstatus = [
@@ -198,8 +205,9 @@ function is_reloading() => dword(0x2bac2c) == 0x1
 function cutscene_blocked_control() => dword(0x3fddc0) == 0x0
 
 video_player_ptr = dword(0x3bd814)
-function is_video_playing() => dword(video_player_ptr + 0x2088) == 0x1
+function is_any_video_playing() => dword(video_player_ptr + 0x2088) == 0x1
 function video_path_equals(path) => ascii_string_equals(video_player_ptr + 0x2028, path)
+function is_video_playing(path) => is_any_video_playing() && video_path_equals(path)
 function video_elapsed() => dword(video_player_ptr + 0x206c)
 
 function reveal_prompt() => dword(0x2bac40)
@@ -264,8 +272,7 @@ function achievement_video(title, description, videopath, triggerframe, points, 
                   !is_on_any_menu() &&
                   between_levels() &&
                   cheat_protection([CHEAT_INVINCIBLE, CHEAT_NODAMAGE]) &&
-                  is_video_playing() &&
-                  video_path_equals(videopath) &&
+                  is_video_playing(videopath) &&
                   prev(video_elapsed() < triggerframe) && video_elapsed() >= triggerframe
     )
 }
@@ -488,16 +495,15 @@ achievement_boss("Mazon Boss", "Defeat Burnital in Burnital's Lair on Mazon", M_
 
 function genitor_world() {
     return on_any_level() &&
-           prev(genitor()) == 16 && measured(genitor() == 17, when=!is_video_playing()) &&
+           prev(genitor()) == 16 && measured(genitor() == 17, when=!is_any_video_playing()) &&
            disable_when(is_fighting_boss(), until=on_level(L_LAB))
 }
 
 function genitor_boss(level) {
     frame_trigger = bosses[level][IDX_GENITORFRAME]
     return between_levels() &&
-           is_video_playing() &&
+           is_video_playing(bosses[level][IDX_VIDEOPATH]) &&
            !is_on_any_menu() &&
-           video_path_equals(bosses[level][IDX_VIDEOPATH]) &&
            prior(genitor()) == 16 && measured(genitor() == 17, when=is_game_active() && 
                                                                     prev(video_elapsed()) < frame_trigger && video_elapsed() >= frame_trigger &&
                                                                     video_path_equals(bosses[level][IDX_VIDEOPATH]))
@@ -762,7 +768,7 @@ rich_presence_conditional_display(is_on_menu_set(MOVIES_MENUS), "Watching a movi
 rich_presence_conditional_display(is_on_menu(MENU_CREDITS), "Honoring some awesome people!")
 rich_presence_conditional_display(is_on_menu_set(LOADING_MENUS), "Picking up where they left off")
 rich_presence_conditional_display(is_on_menu_set(SAVING_MENUS), "Recording their progress {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
-rich_presence_conditional_display(is_video_playing() && video_path_equals("/movies/start.fmav"), "Brainstorming a solution {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+rich_presence_conditional_display(is_video_playing(VIDEO_START), "Brainstorming a solution {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
 rich_presence_conditional_display(is_reloading(), "Learning from their mistakes {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
 rich_presence_conditional_display(is_loading(), "Transloading | {0} | 🌎 {1}/86 ⚛️ {2}/4232 🛰 {3}/17 🧬 {4}/258", rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
 rich_presence_conditional_display(on_level(F_BOSS), "Infesting Steele's ship with fleas {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
