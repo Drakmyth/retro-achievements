@@ -582,7 +582,8 @@ achievement(
               current_health() == max_health() &&
               health_vials() == 20 &&
               current_dialog_is("EDOC210M") &&
-              prev(dialog_is_open()) && !dialog_is_open()
+              prev(!dialog_is_open()) && dialog_is_open() &&
+              disable_when(any_cheats_enabled([CHEAT_INVINCIBLE, CHEAT_NODAMAGE]), until=max_health() == 3 && health_vials() == 0)
               
 )
 
