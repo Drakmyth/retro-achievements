@@ -2,6 +2,12 @@
 // #ID = 20813
 // #MinimumVersion=1.3.1
 
+PLANET_LAB = "lab"
+PLANET_TOTLTEC = "totltec"
+PLANET_AQEUM = "aqeum"
+PLANET_FLOTOS = "flotos"
+PLANET_MAZON = "mazon"
+
 L_LABRED = "labred"
 L_LAB = "lab1"
 T_JUNKYARD = "tl1s"
@@ -61,7 +67,7 @@ GADGET_INVISIBILITY = 2
 GADGET_INVULNERABILITY = 3
 
 VIDEO_START = "/movies/start.fmav"
-VIDEO_VINNEY = "/movies/vinny.fmav"
+VIDEO_VINNY = "/movies/vinny.fmav"
 VIDEO_CARLA = "/movies/carla.fmav"
 VIDEO_STEELE = "/movies/steele.fmav"
 VIDEO_BURNITAL = "/movies/burnital.fmav"
@@ -96,10 +102,10 @@ IDX_GENITORFRAME = 2
 
 // level: [videopath, triggerframe, genitorframe]
 bosses = {
-    T_BOSS: [VIDEO_VINNEY, 0x280, 0x300],
+    T_BOSS: [VIDEO_VINNY, 0x280, 0x300],
     A_BOSS: [VIDEO_CARLA, 0x300, 0x3c0],
     F_BOSS: [VIDEO_STEELE, 0x4d0, 0x550],
-    M_BOSS: [VIDEO_BURNITAL, 0x6d0, 0x790],    
+    M_BOSS: [VIDEO_BURNITAL, 0x6d0, 0x790],
 }
 
 ENDING_BAD = 1
@@ -397,7 +403,7 @@ function achievement_completionist(title, description, level, type=TYPE_NORMAL) 
 }
 
 achievement(
-    title = "Isotope Collector I",
+    title = "A Reactor Full of Isotopes",
     description = "Collect 15 isotopes to prevent the reactor from melting down",
     points = 1,
     type = TYPE_PROGRESSION,
@@ -409,15 +415,17 @@ achievement(
               
 )
 
-achievement_isotopes("Isotope Collector II", "Collect 100 isotopes", 100, 5, TYPE_PROGRESSION)
-achievement_isotopes("Isotope Collector III", "Collect 1000 isotopes", 1000, 5, TYPE_PROGRESSION)
-achievement_isotopes("Isotope Collector IV", "Collect 2184 isotopes", 2184, 10)
+achievement_isotopes("A Lab Full of Isotopes", "Collect 100 isotopes", 100, 5, TYPE_PROGRESSION)
+achievement_isotopes("A Junkyard Full of Isotopes", "Collect 1000 isotopes", 1000, 5, TYPE_PROGRESSION)
+achievement_isotopes("An Ocean Full of Isotopes", "Collect 2184 isotopes", 2184, 10)
+achievement_isotopes("An Atmosphere Full of Isotopes", "Collect 3784 isotopes", 3784, 10)
+achievement_isotopes("A Solar System Full of Isotopes", "Collect all 4234 isotopes", 4234, 25, TYPE_MISSABLE)
 
 hydrostation_isotopes = totals[A_HYDROSTATION][IDX_ISOTOPES]
 player_hydrostation_isotopes = word(totals[A_HYDROSTATION][IDX_ADDRESS])
 
 achievement(
-    title = "The Lost Isotopes",
+    title = "Lost but Not Forgotten",
     description = "Collect \"all\" 282 isotopes in the Hydro Station on Aqeum",
     points = 5,
     trigger = is_game_active() &&
@@ -425,18 +433,17 @@ achievement(
               prev(player_hydrostation_isotopes) < hydrostation_isotopes && measured(player_hydrostation_isotopes == hydrostation_isotopes)
 )
 
-achievement_isotopes("Isotope Collector V", "Collect 3784 isotopes", 3784, 10)
-achievement_isotopes("Isotope Collector VI", "Collect all 4234 isotopes", 4234, 25, TYPE_MISSABLE)
-
-achievement_terra("Terra Collector I", "Collect 1 terra", 1, 1)
-achievement_terra("Terra Collector II", "Collect 23 terra", 23, 10)
-achievement_terra("Terra Collector III", "Collect 51 terra", 51, 10)
+achievement_terra("A Lab's Worth of Terra", "Collect 2 terra", 2, 2)
+achievement_terra("A Dump's Worth of Terra", "Collect 23 terra", 23, 10)
+achievement_terra("A Hole's Worth of Terra", "Collect 51 terra", 51, 10)
+achievement_terra("A Ship's Worth of Terra", "Collect 79 terra", 79, 10)
+achievement_terra("A Planet's Worth of Terra", "Collect all 86 terra", 86, 25)
 
 // Note: AutoCR complains the trigger_when call compares a pointer to a value. It doesn't,
 // but I think it's getting confused by us directly accessing an address in the middle of
 // an array.
 achievement(
-    title = "Cut the Chains",
+    title = "That's a Cool Move",
     description = "Complete Cut the Chains on Flotos without knocking down the steel girders",
     type = TYPE_MISSABLE,
     points = 5,
@@ -446,11 +453,8 @@ achievement(
               prev(dword(0x4119bc)) == 0x0 && trigger_when(dword(0x4119bc) == 0x4)
 )
 
-achievement_terra("Terra Collector IV", "Collect 79 terra", 79, 10)
-achievement_terra("Terra Collector V", "Collect all 86 terra", 86, 25)
-
 achievement(
-    title = "Costume Achievement",
+    title = "Keep Your Shirt On",
     description = "Collect a terra while wearing any secret costume",
     points = 1,
     trigger = is_game_active() &&
@@ -460,10 +464,13 @@ achievement(
               is_using_alternate_costume()
 )
 
-achievement_boss("Totltec Boss", "Defeat Vinny \"The Tool\" Bino in Vinny's Dump on Totltec", T_BOSS)
+achievement_boss("A Ripley Wannabe", "Defeat Vinny \"The Tool\" Bino in Vinny's Dump on Totltec", T_BOSS)
+achievement_boss("Meet Mrs. Tentacles", "Defeat Carla \"Squid Kisser\" MacPhearson in Carla's Hole on Aqeum", A_BOSS)
+achievement_boss("Uh, Just Steele", "Defeat Steele in Steele's Garage on Flotos", F_BOSS)
+achievement_boss("Evil Incarnate", "Defeat Dr. Burnital in Burnital's Lair on Mazon", M_BOSS)
 
 achievement(
-    title = "Totltec Boss Challenge",
+    title = "Pick on Somebody Your Own Size",
     description = "Defeat Vinny without using the Doczilla morph",
     points = 25,
     type = TYPE_MISSABLE,
@@ -475,10 +482,8 @@ achievement(
               disable_when(prev(boss_health()) - boss_health() > 1, until=prev(is_reloading()) && !is_reloading())
 )
 
-achievement_boss("Aqeum Boss", "Defeat Carla \"Squid Kisser\" MacPhearson in Carla's Hole on Aqeum", A_BOSS)
-
 achievement(
-    title = "Aqeum Boss Challenge",
+    title = "You Spin Me Right Round",
     description = "Defeat Carla using only spin attacks",
     points = 25,
     type = TYPE_MISSABLE,
@@ -489,9 +494,6 @@ achievement(
               !prev(is_boss_beaten()) && trigger_when(is_boss_beaten()) &&
               disable_when(prev(boss_health()) - boss_health() == 1, until=prev(is_reloading()) && !is_reloading())
 )
-
-achievement_boss("Flotos Boss", "Defeat Steele in Steele's Garage on Flotos", F_BOSS)
-achievement_boss("Mazon Boss", "Defeat Burnital in Burnital's Lair on Mazon", M_BOSS)
 
 function genitor_world() {
     return on_any_level() &&
@@ -510,7 +512,7 @@ function genitor_boss(level) {
 }
 
 achievement(
-    title = "Genitor Collector",
+    title = "Everything but the Kitchen Sink. Oh, Wait...",
     description = "Collect all 17 parts of the ACME Genitor 9000",
     points = 10,
     type = TYPE_PROGRESSION,
@@ -522,11 +524,11 @@ achievement(
                genitor_boss(M_BOSS))
 )
 
-achievement_ending("Normal End", "Activate the ACME Genitor 9000", ENDING_BAD)
-achievement_ending("True End", "Activate the ACME Genitor 9000 after collecting at least 3400 isotopes", ENDING_GOOD)
+achievement_ending("Eighty-Five Percent of the Time", "Activate the ACME Genitor 9000", ENDING_BAD)
+achievement_ending("It Works Every Time", "Activate the ACME Genitor 9000 after collecting at least 3612 isotopes", ENDING_GOOD)
 
 achievement(
-    title = "Mouse Morph I",
+    title = "The Amazing Gerbillus Doctorus",
     description = "Receive the Gerbillus Doctorus morph formula from Al",
     points = 1,
     trigger = is_game_active() &&
@@ -534,38 +536,40 @@ achievement(
               prev(morphstatus[MORPH_MOUSE]) == 0 && morphstatus[MORPH_MOUSE] == 1
 )
 
-achievement_extra_morph("Mouse Morph II", "Upgrade your Gerbillus Doctorus morph into the Rat morph", MORPH_MOUSE, 900, chark_dna(), 30, 3)
-achievement_discovery("Gorilla Morph I", "Discover the Doczilla morph formula", 250, MENU_FORMULAS, 2)
-achievement_morph("Gorilla Morph II", "Unlock the Doczilla morph", MORPH_GORILLA, 5)
-achievement_extra_morph("Gorilla Morph III", "Upgrade your Doczilla morph into the Mech Gorilla morph", MORPH_GORILLA, 1200, tarfish_dna(), 30, 3)
-achievement_discovery("Spider Morph I", "Discover the Arachnidoc morph formula", 450, MENU_FORMULAS, 2)
-achievement_morph("Spider Morph II", "Unlock the Arachnidoc morph", MORPH_SPIDER, 5)
-achievement_extra_morph("Spider Morph III", "Upgrade your Arachnidoc morph into the Roach morph", MORPH_SPIDER, 1800, peliqui_dna(), 30, 3)
-achievement_discovery("Fish Morph I", "Discover the Spiny Docfish morph formula", 700, MENU_FORMULAS, 2)
-achievement_morph("Fish Morph II", "Unlock the Spiny Docfish morph", MORPH_FISH, 5)
-achievement_extra_morph("Fish Morph III", "Upgrade your Spiny Docfish morph into the Electric Eel morph", MORPH_FISH, 2400, airbag_dna(), 30, 3)
-achievement_discovery("Squirrel Morph I", "Discover the Teradoctyl morph formula", 1400, MENU_FORMULAS, 2)
-achievement_morph("Squirrel Morph II", "Unlock the Teradoctyl morph", MORPH_SQUIRREL, 5)
-achievement_extra_morph("Squirrel Morph III", "Upgrade your Teradoctyl morph into the Bat morph", MORPH_SQUIRREL, 3200, bantra_dna(), 13, 3)
+achievement_extra_morph("The Wonderous Ratticus Doctorus", "Upgrade your Gerbillus Doctorus morph into the Rat morph", MORPH_MOUSE, 900, chark_dna(), 30, 3)
+achievement_discovery("A Simian Discovery", "Discover the Doczilla morph formula", 250, MENU_FORMULAS, 2)
+achievement_morph("Doczilla, King of the Morphs", "Unlock the Doczilla morph", MORPH_GORILLA, 5)
+achievement_extra_morph("The Terror of MechaDoczilla", "Upgrade your Doczilla morph into the Mech Gorilla morph", MORPH_GORILLA, 1200, tarfish_dna(), 30, 3)
+achievement_discovery("An Arachnid Discovery", "Discover the ArachniDoc morph formula", 450, MENU_FORMULAS, 2)
+achievement_morph("The Rare ArachniDoc Spider", "Unlock the ArachniDoc morph", MORPH_SPIDER, 5)
+achievement_extra_morph("The Common Docroach", "Upgrade your ArachniDoc morph into the Roach morph", MORPH_SPIDER, 1800, peliqui_dna(), 30, 3)
+achievement_discovery("A Piscine Discovery", "Discover the Spiny Docfish morph formula", 700, MENU_FORMULAS, 2)
+achievement_morph("The Fantabulous Spiny Docfish", "Unlock the Spiny Docfish morph", MORPH_FISH, 5)
+achievement_extra_morph("The Magnificent Electric Docfish", "Upgrade your Spiny Docfish morph into the Electric Eel morph", MORPH_FISH, 2400, airbag_dna(), 30, 3)
+achievement_discovery("A Sciurine Discovery", "Discover the TeraDoctyl morph formula", 1400, MENU_FORMULAS, 2)
+achievement_morph("The Flying TeraDoctyl", "Unlock the TeraDoctyl morph", MORPH_SQUIRREL, 5)
+achievement_extra_morph("Fruit for the FlitterDoc", "Upgrade your TeraDoctyl morph into the Bat morph", MORPH_SQUIRREL, 3200, bantra_dna(), 13, 3)
 
-achievement_dna("Roach Collector", "Capture DNA from all 44 roaches", roach_dna(), 44)
-achievement_dna("Fire Ant Collector", "Capture DNA from all 46 fire ants", fireant_dna(), 46)
-achievement_dna("Monkey Collector", "Capture DNA from all 16 monkeys", monkey_dna(), 16)
-achievement_dna("Chark Collector", "Capture DNA from all 39 charks", chark_dna(), 39)
-achievement_dna("Tarfish Collector", "Capture DNA from all 40 tarfish", tarfish_dna(), 40)
-achievement_dna("Airbag Collector", "Capture DNA from all 30 airbags", airbag_dna(), 30)
-achievement_dna("Peliqui Collector", "Capture DNA from all 30 peliqui", peliqui_dna(), 30)
-achievement_dna("Bantra Collector", "Capture DNA from all 13 bantra", bantra_dna(), 13)
+achievement_dna("Foul Roach Fauna", "Capture DNA from all 44 Roaches", roach_dna(), 44)
+achievement_dna("I Hate Ants", "Capture DNA from all 46 Fire Ants", fireant_dna(), 46)
+achievement_dna("Crazy Looking Monkeys", "Capture DNA from all 16 Monkeys", monkey_dna(), 16)
+achievement_dna("Swimming with Sharks", "Capture DNA from all 39 Charks", chark_dna(), 39)
+achievement_dna("Something Smells Fishy", "Capture DNA from all 40 Tarfish", tarfish_dna(), 40)
+achievement_dna("Full of Hot Air", "Capture DNA from all 30 Airbags", airbag_dna(), 30)
+achievement_dna("A Bird in the Hand", "Capture DNA from all 30 Peliqui", peliqui_dna(), 30)
+achievement_dna("In a Spider’s Web", "Capture DNA from all 13 Bantra", bantra_dna(), 13)
 
-achievement_discovery("Invisibility Gadget I", "Discover the blueprint for the Invisibility gadget", 65, MENU_BLUEPRINTS, 1)
-achievement_gadget("Invisibility Gadget II", "Collect 7 Kloak Em scrap and unlock the Invisibility gadget", GADGET_INVISIBILITY, 5)
-achievement_discovery("Pocket Rocket Gadget I", "Discover the blueprint for the Pocket Rocket gadget", 150, MENU_BLUEPRINTS, 1)
-achievement_gadget("Pocket Rocket Gadget II", "Collect 7 Uberpowder scrap and unlock the Pocket Rocket gadget", GADGET_POCKETROCKET, 5)
-achievement_discovery("Super Baller Gadget I", "Discover the blueprint for the Super Baller gadget", 375, MENU_BLUEPRINTS, 1)
-achievement_gadget("Super Baller Gadget II", "Collect 7 Boing! scrap and unlock the Super Baller gadget", GADGET_SUPERBALLER, 5)
+achievement_discovery("Now You See Me", "Discover the blueprint for the Invisibility gadget", 65, MENU_BLUEPRINTS, 1)
+achievement_gadget("Now You Don't", "Collect 7 Kloak Em scrap and unlock the Invisibility gadget", GADGET_INVISIBILITY, 5)
+achievement_discovery("Target Acquired", "Discover the blueprint for the Pocket Rocket gadget", 150, MENU_BLUEPRINTS, 1)
+achievement_gadget("Missile Away", "Collect 7 Uberpowder scrap and unlock the Pocket Rocket gadget", GADGET_POCKETROCKET, 5)
+achievement_discovery("Turn the Crank", "Discover the blueprint for the Super Baller gadget", 375, MENU_BLUEPRINTS, 1)
+achievement_gadget("Out Comes Candy", "Collect 7 Boing! scrap and unlock the Super Baller gadget", GADGET_SUPERBALLER, 5)
+achievement_discovery("Walk In Naked", "Discover the blueprint for the Invulnerability gadget", 600, MENU_BLUEPRINTS, 1)
+achievement_gadget("Walk Out Bulletproof", "Collect 7 Renaline scrap and unlock the Invulnerability gadget", GADGET_INVULNERABILITY, 5)
 
 achievement(
-    title = "Dev Mistake I",
+    title = "One Too Many",
     description = "Collect an 8th Boing! scrap",
     points = 1,
     type = TYPE_MISSABLE,
@@ -575,11 +579,8 @@ achievement(
               
 )
 
-achievement_discovery("Invulnerability Gadget I", "Discover the blueprint for the Invulnerability gadget", 600, MENU_BLUEPRINTS, 1)
-achievement_gadget("Invulnerability Gadget II", "Collect 7 Renaline scrap and unlock the Invulnerability gadget", GADGET_INVULNERABILITY, 5)
-
 achievement(
-    title = "Health Collector",
+    title = "Magic Red Bubbly",
     description = "Attempt to collect more than 20 health vials while already at 6 full hearts",
     points = 2,
     badge = "0",
@@ -596,7 +597,7 @@ achievement(
 
 achievement(
     title = "Toilet Humor",
-    description = "Flush the toilet in the Lab",
+    description = "Flush the toilet in The Lab",
     points = 0,
     trigger = is_game_active() &&
               on_level(L_LAB) &&
@@ -608,8 +609,8 @@ achievement(
 )
 
 achievement(
-    title = "Dev Secret I",
-    description = "Activate the Junkyard Dev Easter Egg",
+    title = "Thank You, John!",
+    description = "Find John's gift in The Junkyard on Totltec",
     points = 1,
     trigger = is_game_active() &&
               on_level(T_JUNKYARD) &&
@@ -620,10 +621,11 @@ achievement(
 
 // NOTE: Using `prior()` on this isn't great because we're relying on the game
 // to not re-use the memory the splizz_target was pointing to on the last frame.
-// I haven't found a better way to detect the secret being triggered though.
+// I haven't found a better way to detect the secret being triggered though and
+// it seems to be fairly stable given the other conditions.
 achievement(
-    title = "Dev Secret II",
-    description = "Activate the Vats Dev Easter Egg",
+    title = "More Gifts from John",
+    description = "Find John's gift in The Vats on Totltec",
     points = 1,
     trigger = is_game_active() &&
               on_level(T_VATS) &&
@@ -637,8 +639,8 @@ function discovered_transloader_count() => dword(0x2c0630)
 function last_discovered_transloader() => 0x2c0634 + (discovered_transloader_count() - 1) * 12
 
 achievement(
-    title = "Dev Mistake II",
-    description = "Find the secret transloader on Flotos",
+    title = "I Think You Forgot Something",
+    description = "Find the lost transloader on Flotos",
     points = 1,
     trigger = is_game_active() &&
               on_level(F_JUPITERCITY) &&
@@ -647,7 +649,7 @@ achievement(
 )
 
 achievement(
-    title = "RA Fun",
+    title = "Wrong Emulator",
     description = "Try to enable the RALIBRETRO cheat",
     points = 0,
     trigger = menu_is_open() && is_on_menu(MENU_CHEATS) &&
@@ -701,17 +703,17 @@ function leaderboard_boss(title, description, bosslevel) {
     )
 }
 
-leaderboard_boss("Beat Vinny", "Beat Vinny in the fastest time", T_BOSS)
-leaderboard_boss("Beat Carla", "Beat Carla in the fastest time", A_BOSS)
-leaderboard_boss("Beat Steele", "Beat Steele in the fastest time", F_BOSS)
-leaderboard_boss("Beat Burnital", "Beat Burnital in the fastest time", M_BOSS)
+leaderboard_boss("Vinny Bino Speedrun", "Defeat Vinny in the fastest time", T_BOSS)
+leaderboard_boss("Carla MacPhearson Speedrun", "Defeat Carla MacPhearson in the fastest time", A_BOSS)
+leaderboard_boss("Steele Speedrun", "Defeat Steele in the fastest time", F_BOSS)
+leaderboard_boss("Dr. Burnital Speedrun", "Defeat Dr. Burnital in the fastest time", M_BOSS)
 
 RPPlanets = {
-    "lab": "in the Lab",
-    "totltec": "on Totltec",
-    "aqeum": "on Aqeum",
-    "flotos": "on Flotos",
-    "mazon": "on Mazon"
+    PLANET_LAB: "in the Lab",
+    PLANET_TOTLTEC: "on Totltec",
+    PLANET_AQEUM: "on Aqeum",
+    PLANET_FLOTOS: "on Flotos",
+    PLANET_MAZON: "on Mazon"
 }
 
 RPMorphs = {
@@ -723,6 +725,8 @@ RPMorphs = {
     MORPH_SPIDER: "🕷️",
     MORPH_FLY: "🪰",
 }
+
+RP_MESSAGE_STEELE = "Infesting Steele's ship with fleas"
 
 RPAreas = {
     L_LABRED: "Preventing a meltdown",
@@ -740,7 +744,7 @@ RPAreas = {
     F_CUBE: "Flying circles around The Cube",
     F_FURNACES: "Executing cool moves in The Furnaces",
     F_JUPITERCITY: "Chasing drones around Jupiter City",
-    //F_BOSS: "Infesting Steele's ship with fleas", // Because F_BOSS has the same prefix as F_JUPITERCITY, we need to use a conditional display for it
+    //F_BOSS: RP_MESSAGE_STEELE, // Because F_BOSS has the same prefix as F_JUPITERCITY, we need to use a conditional display for it
     M_WORKSHOP: "Electrifying minions in The Workshop",
     M_BOSS: "Preparing to feel Burnital's wrath",
 }
@@ -753,23 +757,66 @@ rp_isotopes = rich_presence_value("Isotopes", isotopes(), "VALUE")
 rp_genitor = rich_presence_value("Genitor", genitor(), "VALUE")
 rp_dna = rich_presence_value("Dna", dna(), "VALUE")
 
-rich_presence_conditional_display(is_on_menu_set(TITLE_MENUS), "Admiring the Title Screen")
-// on_any_level() on these protects from being on the title screen after good ending
-rich_presence_conditional_display(is_game_active() && on_any_level() && is_on_menu_set(OPTIONS_MENUS), "Tweaking settings {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
-rich_presence_conditional_display(is_game_active() && on_any_level() && is_on_menu(MENU_CHEATS), "Thinking about being naughty {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
-rich_presence_conditional_display(is_game_active() && on_any_level() && is_on_menu(MENU_PAUSE), "Taking a break {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
-rich_presence_conditional_display(is_game_active() && on_any_level() && is_on_menu_set(COLLECTION_MENUS), "Organizing their collectables {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
-rich_presence_conditional_display(is_on_menu_set(OPTIONS_MENUS), "Tweaking settings")
-rich_presence_conditional_display(is_on_menu(MENU_CHEATS), "Thinking about being naughty")
-rich_presence_conditional_display(is_on_menu_set(MOVIES_MENUS), "Watching a movie")
-rich_presence_conditional_display(is_on_menu(MENU_CREDITS), "Honoring some awesome people!")
-rich_presence_conditional_display(is_on_menu_set(LOADING_MENUS), "Picking up where they left off")
-rich_presence_conditional_display(is_on_menu_set(SAVING_MENUS), "Recording their progress {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
-rich_presence_conditional_display(is_video_playing(VIDEO_START), "Brainstorming a solution {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
-rich_presence_conditional_display(is_video_playing(VIDEO_ENDING1), "Celebrating prematurely | {0} | 🌎 {1}/86 ⚛️ {2}/4232 🛰 {3}/17 🧬 {4}/258", rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
-rich_presence_conditional_display(is_video_playing(VIDEO_ENDING2), "\"Relaxing\" on the beach | 🪰 | 🌎 {0}/86 ⚛️ {1}/4232 🛰 {2}/17 🧬 {3}/258", rp_terra, rp_isotopes, rp_genitor, rp_dna)
-rich_presence_conditional_display(is_reloading(), "Learning from their mistakes {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
-rich_presence_conditional_display(is_loading(), "Transloading | {0} | 🌎 {1}/86 ⚛️ {2}/4232 🛰 {3}/17 🧬 {4}/258", rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
-rich_presence_conditional_display(on_level(F_BOSS), "Infesting Steele's ship with fleas {0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+function rp_conditional_message_only(condition, message) {
+    rich_presence_conditional_display(condition, message)
+}
+
+function rp_conditional_no_planet(condition, message, morph=rp_morph) {
+    morph_val = morph
+    if morph != rp_morph {
+        morph_val = RPMorphs[morph]
+    }
+    rich_presence_conditional_display(condition, "{0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", message, morph_val, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+}
+
+function rp_conditional_full(condition, message, planet=rp_planet, morph=rp_morph) {
+    rich_presence_conditional_display(condition, "{0} {1} | {2} | 🌎 {3}/86 ⚛️ {4}/4232 🛰 {5}/17 🧬 {6}/258", message, planet, morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+}
+
+INGAME_YES = 0
+INGAME_NO = 1
+INGAME_BOTH = 2
+
+function rp_conditional_menu_set(menus, message, ingame=INGAME_BOTH) {
+    if (ingame == INGAME_YES || ingame == INGAME_BOTH) {
+        // on_any_level() protects from being on the title screen after good ending
+        rp_conditional_full(is_game_active() && on_any_level() && is_on_menu_set(menus), message)
+    }
+
+    if (ingame == INGAME_NO || ingame == INGAME_BOTH) {
+        rp_conditional_message_only(is_on_menu_set(menus), message)
+    }
+}
+
+function rp_conditional_video(videopath, message, planet, morph=rp_morph) {
+    morph_val = morph
+    if morph != rp_morph {
+        morph_val = RPMorphs[morph]
+    }
+    rp_conditional_full(is_video_playing(videopath), message, RPPlanets[planet], morph_val)
+}
+
+rp_conditional_menu_set(TITLE_MENUS, "Admiring the Title Screen", INGAME_NO)
+rp_conditional_menu_set(OPTIONS_MENUS, "Tweaking settings")
+rp_conditional_menu_set([MENU_CHEATS], "Thinking about being naughty")
+rp_conditional_menu_set([MENU_PAUSE], "Taking a break", INGAME_YES)
+rp_conditional_menu_set(COLLECTION_MENUS, "Organizing their collectables", INGAME_YES)
+rp_conditional_menu_set(MOVIES_MENUS, "Watching a movie", INGAME_NO)
+rp_conditional_menu_set([MENU_CREDITS], "Honoring some awesome people!", INGAME_NO)
+rp_conditional_menu_set(LOADING_MENUS, "Picking up where they left off", INGAME_NO)
+rp_conditional_menu_set(SAVING_MENUS, "Recording their progress", INGAME_YES)
+
+rp_conditional_video(VIDEO_START, "Brainstorming a solution", PLANET_LAB, MORPH_DOC)
+rp_conditional_video(VIDEO_VINNY, RPAreas[T_BOSS], PLANET_TOTLTEC)
+rp_conditional_video(VIDEO_CARLA, RPAreas[A_BOSS], PLANET_AQEUM)
+rp_conditional_video(VIDEO_STEELE, RP_MESSAGE_STEELE, PLANET_FLOTOS)
+rp_conditional_video(VIDEO_BURNITAL, RPAreas[M_BOSS], PLANET_MAZON)
+rp_conditional_video(VIDEO_ENDING1, "Celebrating prematurely", PLANET_LAB, MORPH_DOC)
+
+rp_conditional_no_planet(is_video_playing(VIDEO_ENDING2), "\"Relaxing\" on the beach", MORPH_FLY)
+rp_conditional_no_planet(is_reloading(), "Learning from their mistakes", MORPH_DOC)
+rp_conditional_no_planet(is_loading(), "Transloading", MORPH_DOC)
+rp_conditional_full(on_level(F_BOSS), RP_MESSAGE_STEELE)
+rp_conditional_message_only(current_area_ptr == 0x0, "Transloading")
 
 rich_presence_display("{0} {1} | {2} | 🌎 {3}/86 ⚛️ {4}/4232 🛰 {5}/17 🧬 {6}/258", rp_area, rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
