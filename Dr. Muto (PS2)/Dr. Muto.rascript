@@ -237,6 +237,9 @@ function is_using_alternate_costume() => dword(0x2c1d50) != 0x0 && dword(0x2c1d5
 function current_morph() => dword(0x2c6e58)
 
 function girders_not_dropped() => bit7(0x2ed485) == 0x0 && low4(0x2ed486) == 0x0
+function water_wheel_lasers_disabled() => bit5(0x2ed47e) == 0x1
+function discovered_transloader_count() => dword(0x2c0630)
+function last_discovered_transloader() => 0x2c0634 + (discovered_transloader_count() - 1) * 12
 
 function is_cheat_enabled(cheat) => cheats[cheat] == 0x1
 function any_cheats_enabled(checkcheats) => any_of(checkcheats, is_cheat_enabled)
@@ -439,12 +442,25 @@ achievement_terra("A Hole's Worth of Terra", "Collect 51 terra", 51, 10)
 achievement_terra("A Ship's Worth of Terra", "Collect 79 terra", 79, 10)
 achievement_terra("A Planet's Worth of Terra", "Collect all 86 terra", 86, 25)
 
+achievement(
+    title = "Frickin Laser Barrier Thingy",
+    description = "Reach the Lagoon Ending transloader before disabling the water wheel security lasers on Flotos",
+    type = TYPE_MISSABLE,
+    points = 3,
+    trigger = is_game_active() &&
+              on_level("al1s1c") &&
+              cheat_protection([CHEAT_ALLTRANSLOADERS]) &&
+              !water_wheel_lasers_disabled() &&
+              trigger_when(prev(discovered_transloader_count()) == discovered_transloader_count() - 1) &&
+              trigger_when(ascii_string_equals(last_discovered_transloader(), "DLRT2C1A"))
+)
+
 // Note: AutoCR complains the trigger_when call compares a pointer to a value. It doesn't,
 // but I think it's getting confused by us directly accessing an address in the middle of
 // an array.
 achievement(
     title = "That's a Cool Move",
-    description = "Complete Cut the Chains on Flotos without knocking down the steel girders",
+    description = "Complete Cut the Chains without knocking down the steel girders on Flotos",
     type = TYPE_MISSABLE,
     points = 5,
     trigger = is_game_active() &&
@@ -634,9 +650,6 @@ achievement(
               bit2(prior(splizz_target()) + 0x78) == 0x1
               
 )
-
-function discovered_transloader_count() => dword(0x2c0630)
-function last_discovered_transloader() => 0x2c0634 + (discovered_transloader_count() - 1) * 12
 
 achievement(
     title = "I Think You Forgot Something",
