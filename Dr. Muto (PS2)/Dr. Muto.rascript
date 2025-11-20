@@ -443,7 +443,7 @@ achievement_terra("A Ship's Worth of Terra", "Collect 79 terra", 79, 10)
 achievement_terra("A Planet's Worth of Terra", "Collect all 86 terra", 86, 25)
 
 achievement(
-    title = "Frickin Laser Barrier Thingy",
+    title = "Frickin Laser Beam Barrier Thingy",
     description = "Reach the Lagoon Ending transloader before disabling the water wheel security lasers on Flotos",
     type = TYPE_MISSABLE,
     points = 3,
