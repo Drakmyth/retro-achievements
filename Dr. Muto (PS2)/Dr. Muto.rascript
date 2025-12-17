@@ -74,6 +74,13 @@ VIDEO_BURNITAL = "/movies/burnital.fmav"
 VIDEO_ENDING1 = "/movies/ending1.fmav"
 VIDEO_ENDING2 = "/movies/ending2.fmav"
 
+DIALOG_MELTDOWN = "MBAL420M"
+DIALOG_HEALTH = "EDOC210M"
+DIALOG_JOHN = "SM1TA03M"
+DIALOG_TOTLTEC_RINGS = "SM1TY43M"
+DIALOG_FLOTOS_RINGS = "SM1FY60M"
+DIALOG_MAZON_RINGS = "SM1MY50M"
+
 IDX_ISOTOPES = 0
 IDX_TERRA = 1
 IDX_DNA = 2
@@ -233,8 +240,16 @@ function prev_entered_cheat_is(cheat) => ascii_string_equals(active_menu() + 0x4
 function current_blueprint() => dword(0x3a50b0)
 function dialog_is_open() => bit0(0x2be3a8) == 0x1
 function current_dialog_is(id) => ascii_string_equals(0x2be3b8, id)
+function dialog_opened(id) => current_dialog_is(id) && prev(!dialog_is_open()) && dialog_is_open()
+function dialog_closed(id) => current_dialog_is(id) && prev(dialog_is_open()) && !dialog_is_open()
 function is_using_alternate_costume() => dword(0x2c1d50) != 0x0 && dword(0x2c1d54) == 0x0
 function current_morph() => dword(0x2c6e58)
+function is_morphing() => dword(0x2c7544) != 0
+function hud_timer() => dword(0x2ee850)
+function hud_timer_elapsed() => word(hud_timer() + 0x1D8)
+function hud_timer_limit() => word(hud_timer() + 0x1DA)
+function global_timer() => float(0x39ab24)
+function player_has_joystick_control() => bit1(0x2c7258) == 0
 
 function girders_not_dropped() => bit7(0x2ed485) == 0x0 && low4(0x2ed486) == 0x0
 function water_wheel_lasers_disabled() => bit5(0x2ed47e) == 0x1
@@ -413,9 +428,7 @@ achievement(
     trigger = is_game_active() &&
               on_level(L_LAB) &&
               measured(isotopes() == 15) &&
-              current_dialog_is("MBAL420M") &&
-              prev(dialog_is_open()) && !dialog_is_open()
-              
+              dialog_closed(DIALOG_MELTDOWN)
 )
 
 achievement_isotopes("A Lab Full of Isotopes", "Collect 100 isotopes", 100, 5, TYPE_PROGRESSION)
@@ -460,7 +473,7 @@ achievement(
 // an array.
 achievement(
     title = "That's a Cool Move",
-    description = "Complete Cut the Chains without knocking down the steel girders on Flotos",
+    description = "Complete Cut the Chains without knocking down the steel girders in The Furnaces on Flotos",
     type = TYPE_MISSABLE,
     points = 5,
     trigger = is_game_active() &&
@@ -605,8 +618,7 @@ achievement(
               max_health() == 6 &&
               current_health() == max_health() &&
               health_vials() == 20 &&
-              current_dialog_is("EDOC210M") &&
-              prev(!dialog_is_open()) && dialog_is_open() &&
+              dialog_opened(DIALOG_HEALTH) &&
               disable_when(any_cheats_enabled([CHEAT_INVINCIBLE, CHEAT_NODAMAGE]), until=max_health() == 3 && health_vials() == 0)
               
 )
@@ -630,9 +642,7 @@ achievement(
     points = 1,
     trigger = is_game_active() &&
               on_level(T_JUNKYARD) &&
-              current_dialog_is("SM1TA03M") &&
-              prev(!dialog_is_open()) && dialog_is_open()
-              
+              dialog_opened(DIALOG_JOHN)
 )
 
 // NOTE: Using `prior()` on this isn't great because we're relying on the game
@@ -648,7 +658,6 @@ achievement(
               object_name_is(prior(splizz_target()), "switch_splizz") &&
               prev(bit2(prior(splizz_target()) + 0x78)) == 0x0 &&
               bit2(prior(splizz_target()) + 0x78) == 0x1
-              
 )
 
 achievement(
@@ -677,49 +686,98 @@ achievement_completionist("Lagoon Completionist", "Collect all terra, isotopes, 
 achievement_completionist("Oil Rig Completionist", "Collect all terra, isotopes, and DNA in The Oil Rig on Aqeum", A_OILRIG)
 achievement_completionist("Hydro Station Completionist", "Collect all terra, isotopes, and DNA in the Hydro Station on Aqeum", A_HYDROSTATION)
 achievement_completionist("Water Works Completionist", "Collect all terra, isotopes, and DNA in the Water Works on Aqeum", A_WATERWORKS)
-achievement_completionist("Sphere Completionist", "Collect all terra, isotopes, and DNA in The Sphere on Flotos", F_SPHERE, TYPE_MISSABLE)
-achievement_completionist("Cube Completionist", "Collect all terra, isotopes, and DNA in The Cube on Flotos", F_CUBE, TYPE_MISSABLE)
+achievement_completionist("Sphere Completionist", "Collect all terra, isotopes, and DNA on The Sphere on Flotos", F_SPHERE, TYPE_MISSABLE)
+achievement_completionist("Cube Completionist", "Collect all terra, isotopes, and DNA on The Cube on Flotos", F_CUBE, TYPE_MISSABLE)
 achievement_completionist("Furnaces Completionist", "Collect all terra, isotopes, and DNA in The Furnaces on Flotos", F_FURNACES, TYPE_MISSABLE)
 achievement_completionist("Jupiter City Completionist", "Collect all terra, isotopes, and DNA in Jupiter City on Flotos", F_JUPITERCITY, TYPE_MISSABLE)
 achievement_completionist("Workshop Completionist", "Collect all terra, isotopes, and DNA in The Workshop on Mazon", M_WORKSHOP)
 
-function start_boss_leaderboard(bosslevel) {
-    return is_game_active() &&
-           on_level(bosslevel) &&
-           is_fighting_boss() &&
-           prev(!cutscene_blocked_control()) && cutscene_blocked_control()
-}
+function player_is_teleporting() => dword(0x2c7174) == 0
+function has_started_rings() => once(prev(global_timer() > 1) && global_timer() < 1)
+function lab_meltdown_prevented() => isotopes() >= 15
+function totltec_rings_completed() => bit7(0x2f44fc) == 1
+function flotos_rings_completed() => bit2(0x2f4496) == 1
+function mazon_rings_completed() => bit3(0x2f44fa) == 1
 
-function cancel_boss_leaderboard(bosslevel) {
-    return any_cheats_enabled([CHEAT_INVINCIBLE, CHEAT_NODAMAGE]) ||
-           is_on_menu(MENU_TITLE)
-}
+IDX_DIALOG = 0
+IDX_FUNC = 1
 
-function submit_boss_leaderboard(bosslevel) {
-    return prev(!is_boss_beaten()) && is_boss_beaten()
-}
-
-function value_boss_leaderboard() {
-    return unless(is_on_any_menu() || is_reloading()) && measured(tally(0, always_true()))
+rings_data = {
+    T_JUNKYARD: [DIALOG_TOTLTEC_RINGS, totltec_rings_completed],
+    F_SPHERE: [DIALOG_FLOTOS_RINGS, flotos_rings_completed],
+    M_WORKSHOP: [DIALOG_MAZON_RINGS, mazon_rings_completed]
 }
 
 function leaderboard_boss(title, description, bosslevel) {
     leaderboard(
         title = title,
         description = description,
-        start  = start_boss_leaderboard(bosslevel),
-        cancel = cancel_boss_leaderboard(bosslevel),
-        submit = submit_boss_leaderboard(bosslevel),
-        value  = value_boss_leaderboard(),
+        start  = is_game_active() &&
+           on_level(bosslevel) &&
+           is_fighting_boss() &&
+           prev(!cutscene_blocked_control()) && cutscene_blocked_control(),
+        cancel = any_cheats_enabled([CHEAT_INVINCIBLE, CHEAT_NODAMAGE]) ||
+           is_on_menu(MENU_TITLE),
+        submit = prev(!is_boss_beaten()) && is_boss_beaten(),
+        value  = unless(is_on_any_menu() || is_reloading()) && measured(tally(0, always_true())),
         format = "FRAMES",
         lower_is_better = true
     )
 }
 
+function leaderboard_rings(title, description, level) {
+    dialog = rings_data[level][IDX_DIALOG]
+    rings_completed = rings_data[level][IDX_FUNC]
+
+    leaderboard(
+        title = title,
+        description = description,
+        start = is_game_active() &&
+                on_level(level) &&
+                dialog_closed(dialog),
+        cancel = !on_level(level) || player_is_teleporting(),
+        submit = prev(!rings_completed()) && rings_completed(),
+        value =  disable_when(dialog_closed(dialog), until=has_started_rings()) && measured(tally(0, always_true())) && unless(is_on_any_menu()),
+        format = "FRAMES",
+        lower_is_better = true
+    )    
+}
+
+function leaderboard_timer(title, description, level, limit, elapsed, start, cancel, submit, format="FRAMES") {
+    leaderboard(
+        title = title,
+        description = description,
+        start = is_game_active() &&
+                on_level(level) &&
+                start,
+        cancel = cancel,
+        submit = submit,
+        value = limit - elapsed,
+        format = format,
+        lower_is_better = false
+    )
+}
+
+function leaderboard_timer_instant(title, description, level, limit, elapsed, submit, format="FRAMES") {
+    leaderboard_timer(title, description, level, limit, elapsed,
+        start=submit,
+        cancel=always_false(),
+        submit=always_true())
+}
+
+function leaderboard_hud_timer(title, description, level, submit) {
+    leaderboard_timer_instant(title, description, level, hud_timer_limit(), hud_timer_elapsed(), submit)
+}
+
+leaderboard_hud_timer("Lab Reactor Meltdown", "Prevent the reactor in The Lab from melting down with the most time remaining", L_LABRED,
+    submit=prev(!lab_meltdown_prevented()) && lab_meltdown_prevented())
 leaderboard_boss("Vinny Bino Speedrun", "Defeat Vinny in the fastest time", T_BOSS)
 leaderboard_boss("Carla MacPhearson Speedrun", "Defeat Carla MacPhearson in the fastest time", A_BOSS)
 leaderboard_boss("Steele Speedrun", "Defeat Steele in the fastest time", F_BOSS)
 leaderboard_boss("Dr. Burnital Speedrun", "Defeat Dr. Burnital in the fastest time", M_BOSS)
+leaderboard_rings("Totltec Ring Course", "Complete the ring course in The Junkyard in the fastest time", T_JUNKYARD)
+leaderboard_rings("Flotos Ring Course", "Complete the ring course on The Sphere in the fastest time", F_SPHERE)
+leaderboard_rings("Mazon Ring Course", "Complete the ring course in The Workshop in the fastest time", M_WORKSHOP)
 
 RPPlanets = {
     PLANET_LAB: "in the Lab",
