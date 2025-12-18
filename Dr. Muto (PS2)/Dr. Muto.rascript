@@ -585,7 +585,7 @@ achievement_dna("Swimming with Sharks", "Capture DNA from all 39 Charks", chark_
 achievement_dna("Something Smells Fishy", "Capture DNA from all 40 Tarfish", tarfish_dna(), 40)
 achievement_dna("Full of Hot Air", "Capture DNA from all 30 Airbags", airbag_dna(), 30)
 achievement_dna("A Bird in the Hand", "Capture DNA from all 30 Peliqui", peliqui_dna(), 30)
-achievement_dna("In a Spider’s Web", "Capture DNA from all 13 Bantra", bantra_dna(), 13)
+achievement_dna("In a Spider's Web", "Capture DNA from all 13 Bantra", bantra_dna(), 13)
 
 achievement_discovery("Now You See Me", "Discover the blueprint for the Invisibility gadget", 65, MENU_BLUEPRINTS, 1)
 achievement_gadget("Now You Don't", "Collect 7 Kloak Em scrap and unlock the Invisibility gadget", GADGET_INVISIBILITY, 5)
