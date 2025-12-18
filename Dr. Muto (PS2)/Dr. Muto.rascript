@@ -121,9 +121,8 @@ ENDING_GOOD = 2
 // level: [videopath, triggerframe]
 endings = {
     // ENDING_BAD uses a path prefix to make it trigger when either ending video plays.
-    // It triggers one frame after ENDING_GOOD so it pops second if you get both at the same time.
-    ENDING_BAD: ["/movies/ending", 0x61],
-    ENDING_GOOD: [VIDEO_ENDING2, 0x60],
+    ENDING_BAD: ["/movies/ending", 448],
+    ENDING_GOOD: [VIDEO_ENDING2, 1075],
 }
 
 morphstatus = [
@@ -553,8 +552,8 @@ achievement(
                genitor_boss(M_BOSS))
 )
 
-achievement_ending("Eighty-Five Percent of the Time", "Activate the ACME Genitor 9000", ENDING_BAD)
-achievement_ending("It Works Every Time", "Activate the ACME Genitor 9000 after collecting at least 3612 isotopes", ENDING_GOOD)
+achievement_ending("Is That It?", "Activate the ACME Genitor 9000", ENDING_BAD)
+achievement_ending("The Name Is...", "Activate the ACME Genitor 9000 after collecting at least 3612 isotopes", ENDING_GOOD)
 
 achievement(
     title = "The Amazing Gerbillus Doctorus",
