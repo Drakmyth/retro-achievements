@@ -454,6 +454,8 @@ achievement_terra("A Hole's Worth of Terra", "Collect 51 terra", 51, 10)
 achievement_terra("A Ship's Worth of Terra", "Collect 79 terra", 79, 10)
 achievement_terra("A Planet's Worth of Terra", "Collect all 86 terra", 86, 25)
 
+// Note: AutoCR complains about the transloader name check referencing addresses that are missing code notes.
+// These addresses aren't missing notes, but they are noted as part of an array on 0x2c0634 that AutoCR can't or won't detect.
 achievement(
     title = "Frickin Laser Beam Barrier Thingy",
     description = "Reach the Lagoon Ending transloader before disabling the water wheel security lasers on Flotos",
@@ -467,9 +469,7 @@ achievement(
               trigger_when(ascii_string_equals(last_discovered_transloader(), "DLRT2C1A"))
 )
 
-// Note: AutoCR complains the trigger_when call compares a pointer to a value. It doesn't,
-// but I think it's getting confused by us directly accessing an address in the middle of
-// an array.
+// Note: AutoCR complains the trigger_when call compares a pointer to a value, but that isn't a pointer.
 achievement(
     title = "That's a Cool Move",
     description = "Complete Cut the Chains without knocking down the steel girders in The Furnaces on Flotos",
@@ -484,6 +484,7 @@ achievement(
 achievement(
     title = "Keep Your Shirt On",
     description = "Collect a terra while wearing any secret costume",
+    type = TYPE_MISSABLE,
     points = 1,
     trigger = is_game_active() &&
               on_any_level() &&
@@ -593,6 +594,8 @@ achievement_discovery("Target Acquired", "Discover the blueprint for the Pocket 
 achievement_gadget("Missile Away", "Collect 7 Uberpowder scrap and unlock the Pocket Rocket gadget", GADGET_POCKETROCKET, 5)
 achievement_discovery("Turn the Crank", "Discover the blueprint for the Super Baller gadget", 375, MENU_BLUEPRINTS, 1)
 achievement_gadget("Out Comes Candy", "Collect 7 Boing! scrap and unlock the Super Baller gadget", GADGET_SUPERBALLER, 5)
+
+// Note: AutoCR doesn't like the capitalization of "In" and "Out" in these titles, but these are adverbs and as such are correctly capital.
 achievement_discovery("Walk In Naked", "Discover the blueprint for the Invulnerability gadget", 600, MENU_BLUEPRINTS, 1)
 achievement_gadget("Walk Out Bulletproof", "Collect 7 Renaline scrap and unlock the Invulnerability gadget", GADGET_INVULNERABILITY, 5)
 
@@ -645,9 +648,10 @@ achievement(
 )
 
 // NOTE: Using `prior()` on this isn't great because we're relying on the game
-// to not re-use the memory the splizz_target was pointing to on the last frame.
+// to not re-use the memory the splizz_target was pointing to on the previous frame.
 // I haven't found a better way to detect the secret being triggered though and
-// it seems to be fairly stable given the other conditions.
+// it seems to be fairly reliable as the secret immediately triggers a cutscene during
+// which nothing loads and the pointer cannot change.
 achievement(
     title = "More Gifts from John",
     description = "Find John's gift in The Vats on Totltec",
@@ -659,6 +663,8 @@ achievement(
               bit2(prior(splizz_target()) + 0x78) == 0x1
 )
 
+// Note: AutoCR complains about the transloader name check referencing addresses that are missing code notes.
+// These addresses aren't missing notes, but they are noted as part of an array on 0x2c0634 that AutoCR can't or won't detect.
 achievement(
     title = "I Think You Forgot Something",
     description = "Find the lost transloader on Flotos",
@@ -724,6 +730,9 @@ function leaderboard_boss(title, description, bosslevel) {
     )
 }
 
+// Note: AutoCR doesn't like that there is no command to reset the hit count inside has_started_rings()
+// We don't need one here though because that value should not be reset except by cancelling or submitting
+// the leaderboard, which will automatically force a reset to hit counts in the value logic anyway.
 function leaderboard_rings(title, description, level) {
     dialog = rings_data[level][IDX_DIALOG]
     rings_completed = rings_data[level][IDX_FUNC]
