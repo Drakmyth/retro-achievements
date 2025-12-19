@@ -777,12 +777,12 @@ function leaderboard_hud_timer(title, description, level, submit) {
     leaderboard_timer_instant(title, description, level, hud_timer_limit(), hud_timer_elapsed(), submit)
 }
 
-leaderboard_hud_timer("Lab Reactor Meltdown", "Prevent the reactor in The Lab from melting down with the most time remaining", L_LABRED,
+leaderboard_hud_timer("Lab Reactor Meltdown", "With the most time remaining, prevent the reactor in The Lab from melting down", L_LABRED,
     submit=prev(!lab_meltdown_prevented()) && lab_meltdown_prevented())
 leaderboard_boss("Vinny Bino Speedrun", "Defeat Vinny in the fastest time", T_BOSS)
-leaderboard_boss("Carla MacPhearson Speedrun", "Defeat Carla MacPhearson in the fastest time", A_BOSS)
+leaderboard_boss("Carla MacPhearson Speedrun", "Defeat Carla in the fastest time", A_BOSS)
 leaderboard_boss("Steele Speedrun", "Defeat Steele in the fastest time", F_BOSS)
-leaderboard_boss("Dr. Burnital Speedrun", "Defeat Dr. Burnital in the fastest time", M_BOSS)
+leaderboard_boss("Dr. Burnital Speedrun", "Defeat Burnital in the fastest time", M_BOSS)
 leaderboard_rings("Totltec Ring Course", "Complete the ring course in The Junkyard in the fastest time", T_JUNKYARD)
 leaderboard_rings("Flotos Ring Course", "Complete the ring course on The Sphere in the fastest time", F_SPHERE)
 leaderboard_rings("Mazon Ring Course", "Complete the ring course in The Workshop in the fastest time", M_WORKSHOP)
