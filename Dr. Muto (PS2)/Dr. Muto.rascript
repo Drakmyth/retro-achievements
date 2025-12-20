@@ -661,7 +661,8 @@ achievement(
               prior(splizz_target() != 0x0) &&
               object_name_is(prior(splizz_target()), "switch_splizz") &&
               prev(bit2(prior(splizz_target()) + 0x78)) == 0x0 &&
-              bit2(prior(splizz_target()) + 0x78) == 0x1
+              bit2(prior(splizz_target()) + 0x78) == 0x1 &&
+              !player_has_joystick_control()
 )
 
 // Note: AutoCR complains about the transloader name check referencing addresses that are missing code notes.
