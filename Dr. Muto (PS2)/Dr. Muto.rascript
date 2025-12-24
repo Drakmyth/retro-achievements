@@ -458,7 +458,7 @@ achievement_terra("A Planet's Worth of Terra", "Collect all 86 terra", 86, 25)
 // These addresses aren't missing notes, but they are noted as part of an array on 0x2c0634 that AutoCR can't or won't detect.
 achievement(
     title = "Frickin Laser Beam Barrier Thingy",
-    description = "Reach the Lagoon Ending transloader before disabling the water wheel security lasers on Flotos",
+    description = "Reach the Lagoon Ending transloader before disabling the water wheel security lasers on Aqeum",
     type = TYPE_MISSABLE,
     points = 3,
     trigger = is_game_active() &&
@@ -580,7 +580,7 @@ achievement_morph("The Flying TeraDoctyl", "Unlock the TeraDoctyl morph", MORPH_
 achievement_extra_morph("Fruit for the FlitterDoc", "Upgrade your TeraDoctyl morph into the Bat morph", MORPH_SQUIRREL, 3200, bantra_dna(), 13, 3)
 
 achievement_dna("Foul Roach Fauna", "Capture DNA from all 44 Roaches", roach_dna(), 44)
-achievement_dna("I Hate Ants", "Capture DNA from all 46 Fire Ants", fireant_dna(), 46)
+achievement_dna("I Hate Ants", "Capture DNA from all 46 Fireants", fireant_dna(), 46)
 achievement_dna("Crazy Looking Monkeys", "Capture DNA from all 16 Monkeys", monkey_dna(), 16)
 achievement_dna("Swimming with Sharks", "Capture DNA from all 39 Charks", chark_dna(), 39)
 achievement_dna("Something Smells Fishy", "Capture DNA from all 40 Tarfish", tarfish_dna(), 40)
