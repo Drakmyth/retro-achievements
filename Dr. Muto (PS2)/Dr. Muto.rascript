@@ -685,7 +685,7 @@ achievement(
               !prev_entered_cheat_is("RALIBRETRO") && entered_cheat_is("RALIBRETRO")
 )
 
-achievement_completionist("Lab Completionist", "Collect all terra and isotopes in the Lab", L_LAB, TYPE_MISSABLE)
+achievement_completionist("Lab Completionist", "Collect all terra and isotopes in The Lab", L_LAB, TYPE_MISSABLE)
 achievement_completionist("Junkyard Completionist", "Collect all terra, isotopes, and DNA in The Junkyard on Totltec", T_JUNKYARD, TYPE_MISSABLE)
 achievement_completionist("Vats Completionist", "Collect all terra, isotopes, and DNA in The Vats on Totltec", T_VATS, TYPE_MISSABLE)
 achievement_completionist("Factory Completionist", "Collect all terra, isotopes, and DNA in The Factory on Totltec", T_FACTORY)
@@ -790,7 +790,7 @@ leaderboard_rings("Flotos Ring Course", "Complete the ring course on The Sphere 
 leaderboard_rings("Mazon Ring Course", "Complete the ring course in The Workshop in the fastest time", M_WORKSHOP)
 
 RPPlanets = {
-    PLANET_LAB: "in the Lab",
+    PLANET_LAB: "in The Lab",
     PLANET_TOTLTEC: "on Totltec",
     PLANET_AQEUM: "on Aqeum",
     PLANET_FLOTOS: "on Flotos",
