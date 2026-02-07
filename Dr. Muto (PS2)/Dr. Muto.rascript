@@ -398,7 +398,7 @@ function achievement_gadget(title, description, gadget, points) {
                   on_any_level() &&
                   cheat_protection([CHEAT_ALLGADGETS]) &&
                   measured(scrap[gadget] == 7) &&
-                  once(prev(gadgets[gadget] == 0) && gadgets[gadget] == 1)
+                  prev(gadgets[gadget] == 0) && gadgets[gadget] == 1
     )
 }
 
