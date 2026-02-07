@@ -396,10 +396,9 @@ function achievement_gadget(title, description, gadget, points) {
         points = points,
         trigger = is_game_active() &&
                   on_any_level() &&
-                  never(gadgets[gadget] == 0) &&
+                  cheat_protection([CHEAT_ALLGADGETS]) &&
                   measured(scrap[gadget] == 7) &&
-                  once(prev(gadgets[gadget] == 0) && gadgets[gadget] == 1) &&
-                  (discovery_ignore_prompt(PROMPT_UNLOCK) || discovery_open_menu(MENU_BLUEPRINTS, PROMPT_UNLOCK) || discovery_edgecases())
+                  once(prev(gadgets[gadget] == 0) && gadgets[gadget] == 1)
     )
 }
 
