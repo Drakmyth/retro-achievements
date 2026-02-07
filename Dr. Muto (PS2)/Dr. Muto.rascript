@@ -177,6 +177,8 @@ current_level_ptr = dword(0x2f3b4c)
 current_area_ptr = dword(current_level_ptr + 0x2c)
 function area_id() => current_area_ptr + 0x28
 function planet_name() => current_area_ptr + 0x48
+function area_data_bit_offset() => dword(current_area_ptr + 0x7c)
+global_data_array = 0x2f4464
 
 function isotopes() => word(0x3a3e94)
 function terra() => byte(0x3a3e98)
@@ -301,9 +303,17 @@ function achievement_video(title, description, videopath, triggerframe, points, 
 }
 
 function achievement_boss(title, description, level) {
-    videopath = bosses[level][IDX_VIDEOPATH]
-    triggerframe = bosses[level][IDX_TRIGGERFRAME]
-    achievement_video(title, description, videopath, triggerframe, 10, TYPE_PROGRESSION)
+achievement(
+    title = title,
+    description = description,
+    points = 10,
+    type = TYPE_PROGRESSION,
+    trigger = is_game_active() &&
+              on_level(level) &&
+              cheat_protection([CHEAT_INVINCIBLE, CHEAT_NODAMAGE]) &&
+              is_fighting_boss() &&
+              !prev(is_boss_beaten()) && is_boss_beaten()
+    )
 }
 
 function achievement_ending(title, description, ending) {
@@ -338,9 +348,7 @@ function achievement_discovery(title, description, isotope_count, menu, points) 
         trigger = is_game_active() &&
                   on_any_level() &&
                   cheat_protection([CHEAT_ALLGADGETS, CHEAT_ALLMORPHS, CHEAT_ALLEXTRAMORPHS]) &&
-                  never(isotopes() < isotope_count) &&
-                  once(prev(isotopes()) < isotope_count && isotopes() >= isotope_count) &&
-                  (discovery_ignore_prompt(PROMPT_DISCOVER) || discovery_open_menu(menu, PROMPT_DISCOVER) || discovery_edgecases())
+                  prev(isotopes()) < isotope_count && isotopes() >= isotope_count
     )
 }
 
@@ -352,9 +360,7 @@ function achievement_morph(title, description, morph, points) {
         trigger = is_game_active() &&
                   on_any_level() &&
                   cheat_protection([CHEAT_ALLMORPHS, CHEAT_ALLEXTRAMORPHS]) &&
-                  never(morphstatus[morph] == 0) &&
-                  once(prev(morphstatus[morph] == 0) && morphstatus[morph] == 1) &&
-                  (discovery_ignore_prompt(PROMPT_UNLOCK) || discovery_open_menu(MENU_FORMULAS, PROMPT_UNLOCK) || discovery_edgecases())
+                  prev(morphstatus[morph] == 0) && morphstatus[morph] == 1
     )
 }
 
@@ -702,17 +708,29 @@ achievement_completionist("Workshop Completionist", "Collect all terra, isotopes
 function player_is_teleporting() => dword(0x2c7174) == 0
 function has_started_rings() => once(prev(global_timer() > 1) && global_timer() < 1)
 function lab_meltdown_prevented() => isotopes() >= 15
-function totltec_rings_completed() => bit7(0x2f44fc) == 1
-function flotos_rings_completed() => bit2(0x2f4496) == 1
-function mazon_rings_completed() => bit3(0x2f44fa) == 1
+
+function rings_completed(target_bit_offset) {
+    full_bit_offset = area_data_bit_offset() + target_bit_offset
+
+    target_byte_offset = full_bit_offset / 8
+    //target_bit_offset_in_byte = full_bit_offset & 0x7
+    target_bit_offset_in_byte = target_bit_offset & 0x7 // area_data_bit_offset() seems to always be byte-aligned.
+                                                        // This means we can treat the bit-in-byte offset as a constant
+                                                        // The toolkit seems to get mad trying to mask the full_bit_offset value
+                                                        // So this is the best we can do.
+
+    target_byte = global_data_array + target_byte_offset
+
+    return bit(target_bit_offset_in_byte, target_byte) == 1
+}
 
 IDX_DIALOG = 0
-IDX_FUNC = 1
+IDX_OFFSET = 1
 
 rings_data = {
-    T_JUNKYARD: [DIALOG_TOTLTEC_RINGS, totltec_rings_completed],
-    F_SPHERE: [DIALOG_FLOTOS_RINGS, flotos_rings_completed],
-    M_WORKSHOP: [DIALOG_MAZON_RINGS, mazon_rings_completed]
+    T_JUNKYARD: [DIALOG_TOTLTEC_RINGS, 0xaf],
+    F_SPHERE: [DIALOG_FLOTOS_RINGS, 0xf7],
+    M_WORKSHOP: [DIALOG_MAZON_RINGS, 0x4b]
 }
 
 function leaderboard_boss(title, description, bosslevel) {
@@ -737,7 +755,7 @@ function leaderboard_boss(title, description, bosslevel) {
 // the leaderboard, which will automatically force a reset to hit counts in the value logic anyway.
 function leaderboard_rings(title, description, level) {
     dialog = rings_data[level][IDX_DIALOG]
-    rings_completed = rings_data[level][IDX_FUNC]
+    offset = rings_data[level][IDX_OFFSET]
 
     leaderboard(
         title = title,
@@ -746,7 +764,7 @@ function leaderboard_rings(title, description, level) {
                 on_level(level) &&
                 dialog_closed(dialog),
         cancel = !on_level(level) || player_is_teleporting(),
-        submit = prev(!rings_completed()) && rings_completed(),
+        submit = prev(!rings_completed(offset)) && rings_completed(offset),
         value =  disable_when(dialog_closed(dialog), until=has_started_rings()) && measured(tally(0, always_true())) && unless(is_on_any_menu()),
         format = "FRAMES",
         lower_is_better = true
