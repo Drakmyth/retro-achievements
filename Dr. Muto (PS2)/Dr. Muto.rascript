@@ -726,10 +726,14 @@ function rings_completed(target_bit_offset) {
 IDX_DIALOG = 0
 IDX_OFFSET = 1
 
+T_JUNKYARD_ENDING = "tl1s1c"
+F_SPHERE_ENDING = "fl1s1a"
+M_WORKSHOP_ENDING = "ml1s1f"
+
 rings_data = {
-    T_JUNKYARD: [DIALOG_TOTLTEC_RINGS, 0xaf],
-    F_SPHERE: [DIALOG_FLOTOS_RINGS, 0xf7],
-    M_WORKSHOP: [DIALOG_MAZON_RINGS, 0x4b]
+    T_JUNKYARD_ENDING: [DIALOG_TOTLTEC_RINGS, 0xaf],
+    F_SPHERE_ENDING: [DIALOG_FLOTOS_RINGS, 0x2],
+    M_WORKSHOP_ENDING: [DIALOG_MAZON_RINGS, 0x4b]
 }
 
 function leaderboard_boss(title, description, bosslevel) {
@@ -802,9 +806,9 @@ leaderboard_boss("Vinny Bino Speedrun", "Defeat Vinny in the fastest time", T_BO
 leaderboard_boss("Carla MacPhearson Speedrun", "Defeat Carla in the fastest time", A_BOSS)
 leaderboard_boss("Steele Speedrun", "Defeat Steele in the fastest time", F_BOSS)
 leaderboard_boss("Dr. Burnital Speedrun", "Defeat Burnital in the fastest time", M_BOSS)
-leaderboard_rings("Totltec Ring Course", "Complete the ring course in The Junkyard in the fastest time", T_JUNKYARD)
-leaderboard_rings("Flotos Ring Course", "Complete the ring course on The Sphere in the fastest time", F_SPHERE)
-leaderboard_rings("Mazon Ring Course", "Complete the ring course in The Workshop in the fastest time", M_WORKSHOP)
+leaderboard_rings("Totltec Ring Course", "Complete the ring course in The Junkyard in the fastest time", T_JUNKYARD_ENDING)
+leaderboard_rings("Flotos Ring Course", "Complete the ring course on The Sphere in the fastest time", F_SPHERE_ENDING)
+leaderboard_rings("Mazon Ring Course", "Complete the ring course in The Workshop in the fastest time", M_WORKSHOP_ENDING)
 
 RPPlanets = {
     PLANET_LAB: "in The Lab",
