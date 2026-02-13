@@ -437,9 +437,9 @@ achievement(
 
 achievement_isotopes("A Lab Full of Isotopes", "Collect 100 isotopes", 100, 5, TYPE_PROGRESSION)
 achievement_isotopes("A Junkyard Full of Isotopes", "Collect 1000 isotopes", 1000, 5, TYPE_PROGRESSION)
-achievement_isotopes("An Ocean Full of Isotopes", "Collect 2184 isotopes", 2184, 10)
-achievement_isotopes("An Atmosphere Full of Isotopes", "Collect 3784 isotopes", 3784, 10)
-achievement_isotopes("A Solar System Full of Isotopes", "Collect all 4234 isotopes", 4234, 25, TYPE_MISSABLE)
+achievement_isotopes("An Ocean Full of Isotopes", "Collect 2184 isotopes", 2182, 10)
+achievement_isotopes("An Atmosphere Full of Isotopes", "Collect 3784 isotopes", 3782, 10)
+achievement_isotopes("A Solar System Full of Isotopes", "Collect all 4234 isotopes", 4232, 25, TYPE_MISSABLE)
 
 hydrostation_isotopes = totals[A_HYDROSTATION][IDX_ISOTOPES]
 player_hydrostation_isotopes = word(totals[A_HYDROSTATION][IDX_ADDRESS])
