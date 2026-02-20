@@ -121,8 +121,8 @@ ENDING_GOOD = 2
 // level: [videopath, triggerframe]
 endings = {
     // ENDING_BAD uses a path prefix to make it trigger when either ending video plays.
-    ENDING_BAD: ["/movies/ending", 448],
-    ENDING_GOOD: [VIDEO_ENDING2, 1075],
+    ENDING_BAD: ["/movies/ending", 1],
+    ENDING_GOOD: [VIDEO_ENDING2, 2],
 }
 
 morphstatus = [
