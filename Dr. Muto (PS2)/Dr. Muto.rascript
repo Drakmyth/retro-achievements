@@ -811,7 +811,7 @@ leaderboard_rings("Flotos Ring Course", "Complete the ring course on The Sphere 
 leaderboard_rings("Mazon Ring Course", "Complete the ring course in The Workshop in the fastest time", M_WORKSHOP_ENDING)
 
 RPPlanets = {
-    PLANET_LAB: "in The Lab",
+    PLANET_LAB: "The Lab",
     PLANET_TOTLTEC: "on Totltec",
     PLANET_AQEUM: "on Aqeum",
     PLANET_FLOTOS: "on Flotos",
@@ -831,24 +831,24 @@ RPMorphs = {
 RP_MESSAGE_STEELE = "Infesting Steele's ship with fleas"
 
 RPAreas = {
-    L_LABRED: "Preventing a meltdown",
-    L_LAB: "Wasting time",
-    T_JUNKYARD: "Rumaging through The Junkyard",
-    T_VATS: "Draining The Vats",
-    T_FACTORY: "Disrupting production in The Factory",
-    T_BOSS: "Teaching Vinny a lesson",
-    A_LAGOON: "Bobbing along in The Lagoon",
-    A_OILRIG: "Sabotaging The Oil Rig",
-    A_HYDROSTATION: "Hugging cave walls in the Hydro Station",
-    A_WATERWORKS: "Overloading turbines in the Water Works",
-    A_BOSS: "Playing in Carla's pond",
-    F_SPHERE: "Reversing goomidification in The Sphere",
-    F_CUBE: "Flying circles around The Cube",
-    F_FURNACES: "Executing cool moves in The Furnaces",
-    F_JUPITERCITY: "Chasing drones around Jupiter City",
+    L_LABRED: "In",
+    L_LAB: "In",
+    T_JUNKYARD: "In The Junkyard",
+    T_VATS: "In The Vats",
+    T_FACTORY: "In The Factory",
+    T_BOSS: "Fighting Vinny",
+    A_LAGOON: "In The Lagoon",
+    A_OILRIG: "In The Oil Rig",
+    A_HYDROSTATION: "In the Hydro Station",
+    A_WATERWORKS: "In the Water Works",
+    A_BOSS: "Fighting Carla",
+    F_SPHERE: "In The Sphere",
+    F_CUBE: "In The Cube",
+    F_FURNACES: "In The Furnaces",
+    F_JUPITERCITY: "In Jupiter City",
     //F_BOSS: RP_MESSAGE_STEELE, // Because F_BOSS has the same prefix as F_JUPITERCITY, we need to use a conditional display for it
-    M_WORKSHOP: "Electrifying minions in The Workshop",
-    M_BOSS: "Preparing to feel Burnital's wrath",
+    M_WORKSHOP: "In The Workshop",
+    M_BOSS: "Fighting Burnital",
 }
 
 rp_area = rich_presence_ascii_string_lookup("Area", area_id(), RPAreas)
@@ -856,8 +856,6 @@ rp_planet = rich_presence_ascii_string_lookup("Planet", planet_name(), RPPlanets
 rp_morph = rich_presence_lookup("Morph", current_morph(), RPMorphs, fallback="👨‍⚕️")
 rp_terra = rich_presence_value("Terra", terra(), "VALUE")
 rp_isotopes = rich_presence_value("Isotopes", isotopes(), "VALUE")
-rp_genitor = rich_presence_value("Genitor", genitor(), "VALUE")
-rp_dna = rich_presence_value("Dna", dna(), "VALUE")
 
 function rp_conditional_message_only(condition, message) {
     rich_presence_conditional_display(condition, message)
@@ -868,11 +866,11 @@ function rp_conditional_no_planet(condition, message, morph=rp_morph) {
     if morph != rp_morph {
         morph_val = RPMorphs[morph]
     }
-    rich_presence_conditional_display(condition, "{0} | {1} | 🌎 {2}/86 ⚛️ {3}/4232 🛰 {4}/17 🧬 {5}/258", message, morph_val, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+    rich_presence_conditional_display(condition, "{0} • {1} • {2}/86 Terra • {3}/4232 Isotopes", message, morph_val, rp_terra, rp_isotopes)
 }
 
 function rp_conditional_full(condition, message, planet=rp_planet, morph=rp_morph) {
-    rich_presence_conditional_display(condition, "{0} {1} | {2} | 🌎 {3}/86 ⚛️ {4}/4232 🛰 {5}/17 🧬 {6}/258", message, planet, morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+    rich_presence_conditional_display(condition, "{0} {1} • {2} • {3}/86 Terra • {4}/4232 Isotopes", message, planet, morph, rp_terra, rp_isotopes)
 }
 
 INGAME_YES = 0
@@ -921,4 +919,4 @@ rp_conditional_no_planet(is_loading(), "Transloading", MORPH_DOC)
 rp_conditional_full(on_level(F_BOSS), RP_MESSAGE_STEELE)
 rp_conditional_message_only(current_area_ptr == 0x0, "Transloading")
 
-rich_presence_display("{0} {1} | {2} | 🌎 {3}/86 ⚛️ {4}/4232 🛰 {5}/17 🧬 {6}/258", rp_area, rp_planet, rp_morph, rp_terra, rp_isotopes, rp_genitor, rp_dna)
+rich_presence_display("{0} {1} • {2} • {3}/86 Terra • {4}/4232 Isotopes", rp_area, rp_planet, rp_morph, rp_terra, rp_isotopes)
