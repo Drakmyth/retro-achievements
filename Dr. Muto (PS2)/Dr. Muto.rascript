@@ -833,7 +833,7 @@ RPMorphs = {
     MORPH_FLY: "🪰",
 }
 
-RP_MESSAGE_STEELE = "Infesting Steele's ship with fleas"
+RP_MESSAGE_STEELE = "Fighting Steele"
 
 RPAreas = {
     L_LABRED: "In",
@@ -900,7 +900,9 @@ function rp_conditional_video(videopath, message, planet, morph=rp_morph) {
     if morph != rp_morph {
         morph_val = RPMorphs[morph]
     }
-    rp_conditional_full(is_video_playing(videopath), message, RPPlanets[planet], morph_val)
+    message_suffix = rich_presence_ascii_string_lookup("MessageSuffix", planet_name(), RPMenuMessageSuffix)
+
+    rp_conditional_full(is_video_playing(videopath), message, message_suffix, RPPlanets[planet], morph_val)
 }
 
 rp_conditional_menu_set(TITLE_MENUS, "Admiring the Title Screen", INGAME_NO)
