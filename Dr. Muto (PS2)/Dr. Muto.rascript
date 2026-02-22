@@ -716,7 +716,8 @@ function rings_completed(target_bit_offset) {
     target_bit_offset_in_byte = target_bit_offset & 0x7 // area_data_bit_offset() seems to always be byte-aligned.
                                                         // This means we can treat the bit-in-byte offset as a constant
                                                         // The toolkit seems to get mad trying to mask the full_bit_offset value
-                                                        // So this is the best we can do.
+                                                        // So this is the best we can do. If this ever breaks, the only solution
+                                                        // is to check each bit manually in separate alt groups.
 
     target_byte = global_data_array + target_byte_offset
 
@@ -810,6 +811,10 @@ leaderboard_rings("Totltec Ring Course", "Complete the ring course in The Junkya
 leaderboard_rings("Flotos Ring Course", "Complete the ring course on The Sphere in the fastest time", F_SPHERE_ENDING)
 leaderboard_rings("Mazon Ring Course", "Complete the ring course in The Workshop in the fastest time", M_WORKSHOP_ENDING)
 
+RPMenuMessageSuffix = {
+    PLANET_LAB: " in"
+}
+
 RPPlanets = {
     PLANET_LAB: "The Lab",
     PLANET_TOTLTEC: "on Totltec",
@@ -869,8 +874,8 @@ function rp_conditional_no_planet(condition, message, morph=rp_morph) {
     rich_presence_conditional_display(condition, "{0} • {1} • {2}/86 Terra • {3}/4232 Isotopes", message, morph_val, rp_terra, rp_isotopes)
 }
 
-function rp_conditional_full(condition, message, planet=rp_planet, morph=rp_morph) {
-    rich_presence_conditional_display(condition, "{0} {1} • {2} • {3}/86 Terra • {4}/4232 Isotopes", message, planet, morph, rp_terra, rp_isotopes)
+function rp_conditional_full(condition, message, message_suffix="", planet=rp_planet, morph=rp_morph) {
+    rich_presence_conditional_display(condition, "{0}{1} {2} • {3} • {4}/86 Terra • {5}/4232 Isotopes", message, message_suffix, planet, morph, rp_terra, rp_isotopes)
 }
 
 INGAME_YES = 0
@@ -879,8 +884,10 @@ INGAME_BOTH = 2
 
 function rp_conditional_menu_set(menus, message, ingame=INGAME_BOTH) {
     if (ingame == INGAME_YES || ingame == INGAME_BOTH) {
+        message_suffix = rich_presence_ascii_string_lookup("MessageSuffix", planet_name(), RPMenuMessageSuffix)
+
         // on_any_level() protects from being on the title screen after good ending
-        rp_conditional_full(is_game_active() && on_any_level() && is_on_menu_set(menus), message)
+        rp_conditional_full(is_game_active() && on_any_level() && is_on_menu_set(menus), message, message_suffix)
     }
 
     if (ingame == INGAME_NO || ingame == INGAME_BOTH) {
