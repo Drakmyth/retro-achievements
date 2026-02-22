@@ -682,14 +682,6 @@ achievement(
               ascii_string_equals(last_discovered_transloader(), "DLRT2C4F")
 )
 
-achievement(
-    title = "Wrong Emulator",
-    description = "Try to enable the RALIBRETRO cheat",
-    points = 0,
-    trigger = menu_is_open() && is_on_menu(MENU_CHEATS) &&
-              !prev_entered_cheat_is("RALIBRETRO") && entered_cheat_is("RALIBRETRO")
-)
-
 achievement_completionist("Lab Completionist", "Collect all terra and isotopes in The Lab", L_LAB, TYPE_MISSABLE)
 achievement_completionist("Junkyard Completionist", "Collect all terra, isotopes, and DNA in The Junkyard on Totltec", T_JUNKYARD, TYPE_MISSABLE)
 achievement_completionist("Vats Completionist", "Collect all terra, isotopes, and DNA in The Vats on Totltec", T_VATS, TYPE_MISSABLE)
