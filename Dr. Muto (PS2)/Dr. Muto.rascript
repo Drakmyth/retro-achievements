@@ -447,6 +447,7 @@ player_hydrostation_isotopes = word(totals[A_HYDROSTATION][IDX_ADDRESS])
 achievement(
     title = "Lost but Not Forgotten",
     description = "Collect \"all\" 282 isotopes in the Hydro Station on Aqeum",
+    type = TYPE_MISSABLE,
     points = 5,
     trigger = is_game_active() &&
               on_level(A_HYDROSTATION) &&
@@ -688,7 +689,7 @@ achievement_completionist("Vats Completionist", "Collect all terra, isotopes, an
 achievement_completionist("Factory Completionist", "Collect all terra, isotopes, and DNA in The Factory on Totltec", T_FACTORY)
 achievement_completionist("Lagoon Completionist", "Collect all terra, isotopes, and DNA in The Lagoon on Aqeum", A_LAGOON)
 achievement_completionist("Oil Rig Completionist", "Collect all terra, isotopes, and DNA in The Oil Rig on Aqeum", A_OILRIG)
-achievement_completionist("Hydro Station Completionist", "Collect all terra, isotopes, and DNA in the Hydro Station on Aqeum", A_HYDROSTATION)
+achievement_completionist("Hydro Station Completionist", "Collect all terra, isotopes, and DNA in the Hydro Station on Aqeum", A_HYDROSTATION, TYPE_MISSABLE)
 achievement_completionist("Water Works Completionist", "Collect all terra, isotopes, and DNA in the Water Works on Aqeum", A_WATERWORKS)
 achievement_completionist("Sphere Completionist", "Collect all terra, isotopes, and DNA on The Sphere on Flotos", F_SPHERE, TYPE_MISSABLE)
 achievement_completionist("Cube Completionist", "Collect all terra, isotopes, and DNA on The Cube on Flotos", F_CUBE, TYPE_MISSABLE)
