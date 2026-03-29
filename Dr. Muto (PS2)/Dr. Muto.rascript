@@ -536,27 +536,13 @@ function genitor_world() {
            disable_when(is_fighting_boss(), until=on_level(L_LAB))
 }
 
-function genitor_boss(level) {
-    frame_trigger = bosses[level][IDX_GENITORFRAME]
-    return between_levels() &&
-           is_video_playing(bosses[level][IDX_VIDEOPATH]) &&
-           !is_on_any_menu() &&
-           prior(genitor()) == 16 && measured(genitor() == 17, when=is_game_active() && 
-                                                                    prev(video_elapsed()) < frame_trigger && video_elapsed() >= frame_trigger &&
-                                                                    video_path_equals(bosses[level][IDX_VIDEOPATH]))
-}
-
 achievement(
     title = "Everything but the Kitchen Sink. Oh, Wait...",
     description = "Collect all 17 parts of the ACME Genitor 9000",
     points = 10,
     type = TYPE_PROGRESSION,
     trigger = is_game_active() &&
-              (genitor_world() ||
-               genitor_boss(T_BOSS) ||
-               genitor_boss(A_BOSS) ||
-               genitor_boss(F_BOSS) ||
-               genitor_boss(M_BOSS))
+              prev(genitor()) == 16 && measured(genitor() == 17)
 )
 
 achievement_ending("Is That It?", "Activate the ACME Genitor 9000", ENDING_BAD)
