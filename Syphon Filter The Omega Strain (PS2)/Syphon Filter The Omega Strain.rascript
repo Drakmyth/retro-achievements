@@ -213,6 +213,7 @@ active_interaction_gobj_ptr = dword(active_interaction_ptr + 0xa8)
 script_variable_registry_ptr = dword(0x554f18)
 script_variable_array_ptr = dword(script_variable_registry_ptr + 0x08)
 workers_saved_ptr = dword(dword(script_variable_array_ptr + 0x280) + 0x0c)
+beer_crouches_ptr = dword(dword(script_variable_array_ptr + 0x390) + 0x0c)
 function game_mode() => byte(0x5721c8)
 function current_scene() => byte(0x4ffba0)
 function current_mission() => dword(0x494198)
@@ -243,6 +244,7 @@ function taser_target() => dword(taser_mgr_ptr + 0x2c)
 function taser_past_incap_threshold() => byte(taser_mgr_ptr + 0xbd) == 0x01
 function taser_past_kill_threshold() => byte(taser_mgr_ptr + 0xbc) == 0x01
 function workers_saved() => float(workers_saved_ptr)
+function beer_crouches() => float(beer_crouches_ptr)
 function mission_solo_par(mission) {
     // Training doesn't have a defined solo par, so we make one up
     if (mission == M_TRAINING)
@@ -650,6 +652,7 @@ achievement(
     type = TYPE_NORMAL,
     trigger = is_mission(M_TOKYO) &&
               is_scene(SCENE_IN_MISSION) &&
+              beer_crouches() >= 6.0 &&
               active_interaction_ptr != 0 &&
               prev(active_interaction_ptr) == 0 &&
               active_interaction_gobj() == GOBJ_TOKYO_BEER_KEG
