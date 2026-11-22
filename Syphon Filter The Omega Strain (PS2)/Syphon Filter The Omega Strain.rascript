@@ -191,6 +191,8 @@ SLOT_MELEE = 0x05
 SLOT_HANDS = 0x06
 SLOT_WEAPONS = [SLOT_SIDEARM, SLOT_BACK, SLOT_AUX, SLOT_GRENADE, SLOT_MELEE]
 
+WEAPON_AIR_PISTOL = 0x20
+
 player_mgr_ptr = dword(0x4ffc0c)
 player_ptr = dword(player_mgr_ptr + 0x30)
 player_index = dword(0x4ffd28)
@@ -207,6 +209,7 @@ taser_mgr_ptr = dword(player_inventory_ptr + 0x00)
 script_variable_registry_ptr = dword(0x554f18)
 script_variable_array_ptr = dword(script_variable_registry_ptr + 0x08)
 workers_saved_ptr = dword(dword(script_variable_array_ptr + 0x280) + 0x0c)
+beer_crouches_ptr = dword(dword(script_variable_array_ptr + 0x390) + 0x0c)
 function game_mode() => byte(0x5721c8)
 function current_scene() => byte(0x4ffba0)
 function current_mission() => dword(0x494198)
@@ -218,6 +221,7 @@ function player_rating(rating) => dword(player_stats_ptr + ratings[rating][IDX_O
 function player_best_solo_time(mission) => dword(mission_stats_ptr + (mission * 32))
 function player_best_team_time(mission) => dword(mission_stats_ptr + (mission * 32) + 0x4)
 function player_weapon_slot(slot) => dword(player_inventory_ptr + (slot * 0x10) + 0x8)
+function player_selected_weapon() => player_weapon_slot(byte(player_inventory_ptr + 0x84))
 function mission_collateral() => dword(player_stats_ptr + 0x6c)
 function mission_deaths() => dword(player_stats_ptr + 0x70)
 function mission_kills() => dword(player_stats_ptr + 0x50)
@@ -225,6 +229,7 @@ function mission_knives() => dword(player_stats_ptr + 0x54)
 function mission_headshots() => dword(player_stats_ptr + 0x58)
 function mission_non_lethal() => dword(player_stats_ptr + 0x68)
 function mission_explosives() => dword(player_stats_ptr + 0x60)
+function mission_shots() => dword(player_stats_ptr + 0x74)
 function mission_marksmanship() => (dword(player_stats_ptr + 0x80) * 1.0) / (dword(player_stats_ptr + 0x7c) * 1.0)
 function mission_efficiency() => (dword(player_stats_ptr + 0x78) * 1.0) / (dword(player_stats_ptr + 0x74) * 1.0)
 function mission_timer() => float(mission_ptr + 0x6dc)
@@ -234,6 +239,7 @@ function taser_target() => dword(taser_mgr_ptr + 0x2c)
 function taser_past_incap_threshold() => byte(taser_mgr_ptr + 0xbd) == 0x01
 function taser_past_kill_threshold() => byte(taser_mgr_ptr + 0xbc) == 0x01
 function workers_saved() => float(workers_saved_ptr)
+function beer_crouches() => float(beer_crouches_ptr)
 function mission_solo_par(mission) {
     // Training doesn't have a defined solo par, so we make one up
     if (mission == M_TRAINING)
@@ -605,6 +611,43 @@ achievement(
               once(workers_started_despawning()) &&
               trigger_when(workers_saved() >= 7) &&
               never(repeated(180, once(workers_started_despawning()) && workers_saved() < 7))
+)
+
+achievement(
+    title = "Keep to the Shadows",
+    description = "Kill all 23 targets and complete the mission in KYRGSTAN",
+    points = 5,
+    type = TYPE_NORMAL,
+    trigger = is_mission(M_KYRGYSTAN) &&
+              trigger_when(on_mission_end()) &&
+              is_mission_end_state(END_SUCCESS) &&
+              measured(mission_kills() >= 23)
+)
+
+achievement(
+    title = "A Terrible Headache",
+    description = "Complete CHECHNYA with all 25 targets incapacitated without using the Air Pistol",
+    points = 5,
+    type = TYPE_NORMAL,
+    trigger = is_mission(M_CHECHNYA) &&
+              trigger_when(on_mission_end()) &&
+              is_mission_end_state(END_SUCCESS) &&
+              measured(mission_non_lethal() >= 25) &&
+              never(
+                  is_scene(SCENE_IN_MISSION) &&
+                  player_selected_weapon() == WEAPON_AIR_PISTOL &&
+                  mission_shots() > prev(mission_shots())
+              )
+)
+
+achievement(
+    title = "Draft Intelligence",
+    description = "Drink from the secret beer keg in TOKYO",
+    points = 5,
+    type = TYPE_NORMAL,
+    trigger = is_mission(M_TOKYO) &&
+              is_scene(SCENE_IN_MISSION) &&
+              beer_crouches() > prev(beer_crouches())
 )
 
 achievement_bythebook(M_TRAINING, 10)
