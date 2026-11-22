@@ -615,7 +615,7 @@ achievement(
               is_scene(SCENE_IN_MISSION) &&
               once(workers_started_despawning()) &&
               trigger_when(workers_saved() >= 7) &&
-              never(repeated(180, once(workers_started_despawning()) && workers_saved() < 7))
+              never(repeated(30, once(workers_started_despawning()) && workers_saved() < 7))
 )
 
 achievement(
