@@ -212,6 +212,7 @@ active_interaction_ptr = dword(player_ptr + 0x3474)
 active_interaction_gobj_ptr = dword(active_interaction_ptr + 0xa8)
 script_variable_registry_ptr = dword(0x554f18)
 script_variable_array_ptr = dword(script_variable_registry_ptr + 0x08)
+workers_dead_ptr = dword(dword(script_variable_array_ptr + 0x27c) + 0x0c)
 workers_saved_ptr = dword(dword(script_variable_array_ptr + 0x280) + 0x0c)
 beer_crouches_ptr = dword(dword(script_variable_array_ptr + 0x390) + 0x0c)
 function game_mode() => byte(0x5721c8)
@@ -243,6 +244,7 @@ function taser_state() => byte(taser_mgr_ptr + 0x08)
 function taser_target() => dword(taser_mgr_ptr + 0x2c)
 function taser_past_incap_threshold() => byte(taser_mgr_ptr + 0xbd) == 0x01
 function taser_past_kill_threshold() => byte(taser_mgr_ptr + 0xbc) == 0x01
+function workers_dead() => float(workers_dead_ptr)
 function workers_saved() => float(workers_saved_ptr)
 function beer_crouches() => float(beer_crouches_ptr)
 function mission_solo_par(mission) {
@@ -613,8 +615,8 @@ achievement(
     type = TYPE_NORMAL,
     trigger = is_mission(M_BELARUS1) &&
               is_scene(SCENE_IN_MISSION) &&
-              once(workers_started_despawning()) &&
-              trigger_when(workers_saved() >= 7) &&
+              workers_dead() == 0 &&
+              trigger_when(once(workers_started_despawning()) && workers_saved() >= 7) &&
               never(repeated(30, once(workers_started_despawning()) && workers_saved() < 7))
 )
 
