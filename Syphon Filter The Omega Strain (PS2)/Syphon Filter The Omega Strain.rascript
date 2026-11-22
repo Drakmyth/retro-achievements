@@ -617,7 +617,10 @@ achievement(
               is_scene(SCENE_IN_MISSION) &&
               workers_dead() == 0 &&
               trigger_when(once(workers_started_despawning()) && workers_saved() >= 7) &&
-              never(repeated(30, once(workers_started_despawning()) && workers_saved() < 7))
+              disable_when(
+                  repeated(30, workers_saved() > 0 && workers_saved() < 7),
+                  until = !is_mission(M_BELARUS1) || !is_scene(SCENE_IN_MISSION)
+              )
 )
 
 achievement(
