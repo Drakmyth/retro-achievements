@@ -193,6 +193,9 @@ SLOT_WEAPONS = [SLOT_SIDEARM, SLOT_BACK, SLOT_AUX, SLOT_GRENADE, SLOT_MELEE]
 
 WEAPON_AIR_PISTOL = 0x20
 
+GOBJ_TOKYO_BEER_KEG = 0x1614cc
+BUTTON_X = 0x40
+
 player_mgr_ptr = dword(0x4ffc0c)
 player_ptr = dword(player_mgr_ptr + 0x30)
 player_index = dword(0x4ffd28)
@@ -206,6 +209,8 @@ zeus_array_ptr = player_stats_ptr + 0xdc
 objective_state_ptr = player_stats_ptr + 0x84
 player_inventory_ptr = dword(player_ptr + 0x3524)
 taser_mgr_ptr = dword(player_inventory_ptr + 0x00)
+active_interaction_ptr = dword(player_ptr + 0x3474)
+active_interaction_gobj_ptr = dword(active_interaction_ptr + 0xa8)
 script_variable_registry_ptr = dword(0x554f18)
 script_variable_array_ptr = dword(script_variable_registry_ptr + 0x08)
 workers_saved_ptr = dword(dword(script_variable_array_ptr + 0x280) + 0x0c)
@@ -234,6 +239,8 @@ function mission_marksmanship() => (dword(player_stats_ptr + 0x80) * 1.0) / (dwo
 function mission_efficiency() => (dword(player_stats_ptr + 0x78) * 1.0) / (dword(player_stats_ptr + 0x74) * 1.0)
 function mission_timer() => float(mission_ptr + 0x6dc)
 function mission_success() => byte(player_stats_ptr + 0xb71)
+function active_interaction_gobj() => dword(active_interaction_gobj_ptr + 0x0c)
+function button_pressed(button) => byte(0x55a448) & button == button
 function taser_state() => byte(taser_mgr_ptr + 0x08)
 function taser_target() => dword(taser_mgr_ptr + 0x2c)
 function taser_past_incap_threshold() => byte(taser_mgr_ptr + 0xbd) == 0x01
@@ -647,7 +654,9 @@ achievement(
     type = TYPE_NORMAL,
     trigger = is_mission(M_TOKYO) &&
               is_scene(SCENE_IN_MISSION) &&
-              beer_crouches() > prev(beer_crouches())
+              beer_crouches() >= 6 &&
+              active_interaction_gobj() == GOBJ_TOKYO_BEER_KEG &&
+              button_pressed(BUTTON_X)
 )
 
 achievement_bythebook(M_TRAINING, 10)
