@@ -668,3 +668,33 @@ achievement_bythebook(M_MYANMAR, 10)
 achievement_bythebook(M_ZURICH, 10)
 achievement_bythebook(M_MONTENEGRO, 10)
 achievement_bythebook(M_UKRAINE, 10)
+
+RPMissions = {
+    M_CARTHAGE1: "Carthage: Quarantine Zone",
+    M_CARTHAGE2: "Carthage: Warehouse District",
+    M_CARTHAGE3: "Carthage Mall",
+    M_ITALY: "St. Cetteo Square",
+    M_BELARUS1: "Krivorozhstal Mill",
+    M_BELARUS2: "Belaya Vezha",
+    M_KYRGYSTAN: "Saydahmat's Village",
+    M_YEMEN1: "Sana'a Arms Bazaar",
+    M_YEMEN2: "Taherir Palace",
+    M_MINSK: "Minsk International University",
+    M_CHECHNYA: "Ivankov's Home",
+    M_LORELEI: "Lorelei Salvage Rig",
+    M_TOKYO: "Murakawa Tower",
+    M_MYANMAR: "Irawaddy Basin",
+    M_ZURICH: "Niculescu Funds Tower",
+    M_MONTENEGRO: "Niculescu's Villa Estate",
+    M_UKRAINE: "Chechen Terrorist Base",
+    M_TRAINING: "IPCA Training Center"
+}
+
+rp_mission = rich_presence_lookup("Mission", current_mission(), RPMissions, fallback="an unknown mission")
+rp_mission_time = rich_presence_value("MissionTime", mission_timer(), "SECS")
+
+rich_presence_conditional_display(is_scene(SCENE_EQUIPMENT_SELECT), "Preparing for {0}", rp_mission)
+rich_presence_conditional_display(is_scene(SCENE_IN_MISSION), "On assignment at {0} • {1}", rp_mission, rp_mission_time)
+rich_presence_conditional_display(is_scene(SCENE_FADE_OUT), "Wrapping up at {0}", rp_mission)
+rich_presence_conditional_display(is_scene(SCENE_SUMMARY), "Reviewing the operation at {0}", rp_mission)
+rich_presence_display("At IPCA headquarters")
