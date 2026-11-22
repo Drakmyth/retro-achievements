@@ -204,6 +204,9 @@ zeus_array_ptr = player_stats_ptr + 0xdc
 objective_state_ptr = player_stats_ptr + 0x84
 player_inventory_ptr = dword(player_ptr + 0x3524)
 taser_mgr_ptr = dword(player_inventory_ptr + 0x00)
+script_variable_registry_ptr = dword(0x554f18)
+script_variable_array_ptr = dword(script_variable_registry_ptr + 0x08)
+workers_saved_ptr = dword(dword(script_variable_array_ptr + 0x280) + 0x0c)
 function game_mode() => byte(0x5721c8)
 function current_scene() => byte(0x4ffba0)
 function current_mission() => dword(0x494198)
@@ -230,6 +233,7 @@ function taser_state() => byte(taser_mgr_ptr + 0x08)
 function taser_target() => dword(taser_mgr_ptr + 0x2c)
 function taser_past_incap_threshold() => byte(taser_mgr_ptr + 0xbd) == 0x01
 function taser_past_kill_threshold() => byte(taser_mgr_ptr + 0xbc) == 0x01
+function workers_saved() => float(workers_saved_ptr)
 function mission_solo_par(mission) {
     // Training doesn't have a defined solo par, so we make one up
     if (mission == M_TRAINING)
@@ -587,6 +591,20 @@ achievement(
               trigger_when(on_mission_end()) &&
               is_mission_end_state(END_SUCCESS) &&
               measured(mission_kills() >= 16)
+)
+
+function workers_started_despawning() => workers_saved() > 0 && prev(workers_saved()) == 0
+
+achievement(
+    title = "All Aboard",
+    description = "Take all 7 workers down the elevator together in BELARUS1",
+    points = 5,
+    type = TYPE_NORMAL,
+    trigger = is_mission(M_BELARUS1) &&
+              is_scene(SCENE_IN_MISSION) &&
+              once(workers_started_despawning()) &&
+              trigger_when(workers_saved() >= 7) &&
+              never(repeated(180, once(workers_started_despawning()) && workers_saved() < 7))
 )
 
 achievement_bythebook(M_TRAINING, 10)
