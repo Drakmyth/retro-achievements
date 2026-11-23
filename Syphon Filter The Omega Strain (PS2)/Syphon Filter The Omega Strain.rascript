@@ -641,13 +641,18 @@ achievement(
     points = 5,
     type = TYPE_NORMAL,
     trigger = is_mission(M_CHECHNYA) &&
-              trigger_when(on_mission_end()) &&
-              is_mission_end_state(END_SUCCESS) &&
-              measured(mission_non_lethal() >= 25) &&
-              never(
+              is_scene_any_of([SCENE_IN_MISSION, SCENE_FADE_OUT]) &&
+              trigger_when(
+                  on_mission_end() &&
+                  is_mission_end_state(END_SUCCESS) &&
+                  measured(mission_non_lethal() >= 25)
+              ) &&
+              disable_when(
                   is_scene(SCENE_IN_MISSION) &&
                   player_selected_weapon() == WEAPON_AIR_PISTOL &&
-                  mission_hits() > prev(mission_hits())
+                  mission_hits() > prev(mission_hits()),
+                  until = !is_mission(M_CHECHNYA) ||
+                          !is_scene_any_of([SCENE_IN_MISSION, SCENE_FADE_OUT])
               )
 )
 
