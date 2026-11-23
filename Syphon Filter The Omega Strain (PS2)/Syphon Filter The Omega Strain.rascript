@@ -192,6 +192,10 @@ SLOT_HANDS = 0x06
 SLOT_WEAPONS = [SLOT_SIDEARM, SLOT_BACK, SLOT_AUX, SLOT_GRENADE, SLOT_MELEE]
 
 WEAPON_AIR_PISTOL = 0x20
+WEAPON_DORMAGEN_GAS = 0x40
+WEAPON_RIOT_SHOTGUN = 0x7a
+WEAPON_RIOT_PISTOL = 0x7b
+ZURICH_NON_LETHAL_WEAPONS = [WEAPON_AIR_PISTOL, WEAPON_DORMAGEN_GAS, WEAPON_RIOT_SHOTGUN, WEAPON_RIOT_PISTOL]
 
 GOBJ_TOKYO_BEER_KEG = 0x1614cc
 GOBJ_IMANI = 0x180809
@@ -229,6 +233,7 @@ function player_best_solo_time(mission) => dword(mission_stats_ptr + (mission * 
 function player_best_team_time(mission) => dword(mission_stats_ptr + (mission * 32) + 0x4)
 function player_weapon_slot(slot) => dword(player_inventory_ptr + (slot * 0x10) + 0x8)
 function player_selected_weapon() => player_weapon_slot(byte(player_inventory_ptr + 0x84))
+function player_has_weapon(weapon) => __ornext(any_of(range(0, SLOT_MELEE), slot => player_weapon_slot(slot) == weapon))
 function mission_collateral() => dword(player_stats_ptr + 0x6c)
 function mission_deaths() => dword(player_stats_ptr + 0x70)
 function mission_kills() => dword(player_stats_ptr + 0x50)
@@ -692,6 +697,25 @@ achievement(
                   once(carrying_imani()) && !carrying_imani(),
                   until = !is_mission(M_MYANMAR) || !is_scene(SCENE_IN_MISSION)
               )
+)
+
+achievement(
+    title = "Non-Lethal Assets",
+    description = "Collect all 4 ranged non-lethal weapons in ZURICH without bringing any of them in your initial loadout",
+    points = 5,
+    type = TYPE_NORMAL,
+    trigger = is_mission(M_ZURICH) &&
+              never(!is_scene(SCENE_IN_MISSION)) &&
+              measured(tally(4,
+                  once(player_has_weapon(WEAPON_AIR_PISTOL)),
+                  once(player_has_weapon(WEAPON_DORMAGEN_GAS)),
+                  once(player_has_weapon(WEAPON_RIOT_SHOTGUN)),
+                  once(player_has_weapon(WEAPON_RIOT_PISTOL))
+              ), when = once(
+                  is_scene(SCENE_IN_MISSION) &&
+                  prev(is_scene(SCENE_EQUIPMENT_SELECT)) &&
+                  all_of(ZURICH_NON_LETHAL_WEAPONS, weapon => !player_has_weapon(weapon))
+              ))
 )
 
 achievement_bythebook(M_TRAINING, 10)
