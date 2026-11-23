@@ -642,17 +642,21 @@ achievement(
     type = TYPE_NORMAL,
     trigger = is_mission(M_CHECHNYA) &&
               is_scene_any_of([SCENE_IN_MISSION, SCENE_FADE_OUT]) &&
-              trigger_when(
-                  on_mission_end() &&
-                  is_mission_end_state(END_SUCCESS) &&
-                  mission_non_lethal() >= 25
+              // The progress-only alternate cannot unlock; it keeps Measured
+              // from blocking the challenge indicator in the completion alternate.
+              (
+                  trigger_when(
+                      on_mission_end() &&
+                      is_mission_end_state(END_SUCCESS) &&
+                      mission_non_lethal() >= 25
+                  ) ||
+                  (measured(mission_non_lethal() >= 25) && trigger_when(always_false()))
               ) &&
               disable_when(
                   is_scene(SCENE_IN_MISSION) &&
                   player_selected_weapon() == WEAPON_AIR_PISTOL &&
                   mission_hits() > prev(mission_hits()),
-                  until = !is_mission(M_CHECHNYA) ||
-                          !is_scene_any_of([SCENE_IN_MISSION, SCENE_FADE_OUT])
+                  until = is_scene(SCENE_IN_MISSION) && mission_hits() == 0
               )
 )
 
