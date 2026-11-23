@@ -235,6 +235,7 @@ function mission_headshots() => dword(player_stats_ptr + 0x58)
 function mission_non_lethal() => dword(player_stats_ptr + 0x68)
 function mission_explosives() => dword(player_stats_ptr + 0x60)
 function mission_shots() => dword(player_stats_ptr + 0x74)
+function mission_hits() => dword(player_stats_ptr + 0x78)
 function mission_marksmanship() => (dword(player_stats_ptr + 0x80) * 1.0) / (dword(player_stats_ptr + 0x7c) * 1.0)
 function mission_efficiency() => (dword(player_stats_ptr + 0x78) * 1.0) / (dword(player_stats_ptr + 0x74) * 1.0)
 function mission_timer() => float(mission_ptr + 0x6dc)
@@ -646,7 +647,7 @@ achievement(
               never(
                   is_scene(SCENE_IN_MISSION) &&
                   player_selected_weapon() == WEAPON_AIR_PISTOL &&
-                  mission_shots() > prev(mission_shots())
+                  mission_hits() > prev(mission_hits())
               )
 )
 
