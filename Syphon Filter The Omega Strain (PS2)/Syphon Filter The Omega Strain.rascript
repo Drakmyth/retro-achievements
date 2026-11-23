@@ -194,6 +194,7 @@ SLOT_WEAPONS = [SLOT_SIDEARM, SLOT_BACK, SLOT_AUX, SLOT_GRENADE, SLOT_MELEE]
 WEAPON_AIR_PISTOL = 0x20
 
 GOBJ_TOKYO_BEER_KEG = 0x1614cc
+GOBJ_IMANI = 0x180809
 
 player_mgr_ptr = dword(0x4ffc0c)
 player_ptr = dword(player_mgr_ptr + 0x30)
@@ -215,6 +216,7 @@ script_variable_array_ptr = dword(script_variable_registry_ptr + 0x08)
 workers_dead_ptr = dword(dword(script_variable_array_ptr + 0x27c) + 0x0c)
 workers_saved_ptr = dword(dword(script_variable_array_ptr + 0x280) + 0x0c)
 beer_crouches_ptr = dword(dword(script_variable_array_ptr + 0x390) + 0x0c)
+imani_in_end_box_ptr = dword(dword(script_variable_array_ptr + 0x254) + 0x0c)
 function game_mode() => byte(0x5721c8)
 function current_scene() => byte(0x4ffba0)
 function current_mission() => dword(0x494198)
@@ -248,6 +250,10 @@ function taser_past_kill_threshold() => byte(taser_mgr_ptr + 0xbc) == 0x01
 function workers_dead() => float(workers_dead_ptr)
 function workers_saved() => float(workers_saved_ptr)
 function beer_crouches() => float(beer_crouches_ptr)
+function carried_body_ptr() => dword(player_ptr + 0x3478)
+function carried_body_id() => dword(player_ptr + 0x347c)
+function carrying_imani() => carried_body_id() == GOBJ_IMANI
+function imani_in_end_box() => dword(imani_in_end_box_ptr) == 1
 function mission_solo_par(mission) {
     // Training doesn't have a defined solo par, so we make one up
     if (mission == M_TRAINING)
@@ -671,6 +677,21 @@ achievement(
               active_interaction_ptr != 0 &&
               prev(active_interaction_ptr) == 0 &&
               active_interaction_gobj() == GOBJ_TOKYO_BEER_KEG
+)
+
+achievement(
+    title = "Handle With Care",
+    description = "In MYANMAR, carry Imani's body from the crash site to the boat without dropping her",
+    points = 5,
+    type = TYPE_NORMAL,
+    trigger = is_mission(M_MYANMAR) &&
+              is_scene(SCENE_IN_MISSION) &&
+              never(!is_mission(M_MYANMAR) || !is_scene(SCENE_IN_MISSION)) &&
+              trigger_when(carried_body_ptr() != 0 && carrying_imani() && imani_in_end_box()) &&
+              disable_when(
+                  once(carrying_imani()) && !carrying_imani(),
+                  until = !is_mission(M_MYANMAR) || !is_scene(SCENE_IN_MISSION)
+              )
 )
 
 achievement_bythebook(M_TRAINING, 10)
