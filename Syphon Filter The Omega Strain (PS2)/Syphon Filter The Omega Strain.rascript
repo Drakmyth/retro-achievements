@@ -645,7 +645,7 @@ achievement(
               trigger_when(
                   on_mission_end() &&
                   is_mission_end_state(END_SUCCESS) &&
-                  measured(mission_non_lethal() >= 25)
+                  mission_non_lethal() >= 25
               ) &&
               disable_when(
                   is_scene(SCENE_IN_MISSION) &&
