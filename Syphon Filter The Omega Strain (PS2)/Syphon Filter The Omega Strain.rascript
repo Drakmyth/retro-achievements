@@ -718,6 +718,24 @@ achievement(
               ))
 )
 
+achievement(
+    title = "All Bets Are Off",
+    description = "Complete MNTNEGR while maintaining stealth, firing no more than 16 shots, and killing every target with a headshot",
+    points = 5,
+    type = TYPE_NORMAL,
+    trigger = is_mission(M_MONTENEGRO) &&
+              is_scene_any_of([SCENE_IN_MISSION, SCENE_FADE_OUT]) &&
+              objective_status(0) != OBJ_FAILED &&
+              mission_shots() <= 16 &&
+              mission_kills() == mission_headshots() &&
+              trigger_when(
+                  on_mission_end() &&
+                  is_mission_end_state(END_SUCCESS) &&
+                  mission_kills() >= 16 &&
+                  mission_headshots() >= 16
+              )
+)
+
 achievement_bythebook(M_TRAINING, 10)
 achievement_bythebook(M_CARTHAGE1, 10)
 achievement_bythebook(M_CARTHAGE2, 10)
