@@ -281,6 +281,7 @@ function solo_objective_range(mission) {
     return range(0, end_index)
 }
 function objective_status(index) => byte(dword(objective_mgr_ptr + 0x130 + (index * 4)) + 0x24)
+function objective_visible(index) => byte(dword(objective_mgr_ptr + 0x130 + (index * 4)) + 0x25)
 function is_objective_failed(mission, index) {
     if (array_contains(M_SOLO_TEAM, mission) && index == solo_team_objs[mission]) {
         return always_false()
@@ -550,9 +551,9 @@ achievement(
               no_failed_pinnacle_requirements()
 )
 
-function on_objective_revealed(mission, index) {
-    return objective_status(index) != 0x00 &&
-           prev(objective_status(index)) == 0x00
+function on_objective_revealed(index) {
+    return objective_visible(index) == 0x01 &&
+           prev(objective_visible(index)) == 0x00
 }
 
 achievement(
@@ -564,7 +565,7 @@ achievement(
               any_of(M_HIDDEN_OBJ, mission =>
                   is_mission(mission) &&
                   any_of(hidden_objs[mission], index =>
-                      on_objective_revealed(mission, index) // TODO: This can be done by anyone on the team in multiplayer
+                      on_objective_revealed(index)
                   )
               )
 )
