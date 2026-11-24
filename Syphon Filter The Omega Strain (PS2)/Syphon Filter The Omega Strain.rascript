@@ -157,7 +157,7 @@ solo_team_objs = {
 hidden_objs = {
     M_CARTHAGE2: [7],
     M_BELARUS1: [1], // Take tissue sample from cow
-    M_BELARUS2: [8],
+    M_BELARUS2: [8, 9], // Ivankov's papers; sewage sample
     M_KYRGYSTAN: [13, 14],
     M_YEMEN1: [8, 9],
     M_ZURICH: [9, 10],
