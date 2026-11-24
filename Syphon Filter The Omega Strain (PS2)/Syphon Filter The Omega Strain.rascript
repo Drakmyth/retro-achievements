@@ -319,7 +319,7 @@ function num_complete_awards(award) => sum_of(range(0, awards[award][IDX_COUNT] 
 function medal_state(medal) => byte(dword(player_stats_ptr + awards[AWARD_MEDALS][IDX_ARRAY_OFFSET]) + (medal * 20))
 // Integer division on omega_array_ptr bytes effectively treats 0x00 and 0x01 as 0x00, and 0x02 as 0x01
 function num_complete_omega() => sum_of(range(0, 9), index => byte(omega_array_ptr + index) / 2)
-function omega_complete() => byte(dword(player_stats_ptr + 0xaf0)) == 1
+function omega_complete() => byte(dword(player_stats_ptr + 0xaf0)) != 0
 function on_mission_end() => is_scene(SCENE_FADE_OUT) && prev(is_scene(SCENE_IN_MISSION))
 function on_mission_success() => mission_success() == 0x01 && prev(mission_success()) == 0x00
 function taser_has_target() => taser_target() != 0x00
@@ -539,11 +539,11 @@ achievement(
     points = 5,
     type = TYPE_NORMAL,
     trigger = all_zeus_objectives_complete(dword) &&
-              medal_state(MEDAL_HOMELAND_SECURITY) == 1 &&
+              medal_state(MEDAL_HOMELAND_SECURITY) != 0 &&
               omega_complete() &&
               (
                   !all_zeus_objectives_complete(addr => prev(dword(addr))) ||
-                  prev(medal_state(MEDAL_HOMELAND_SECURITY)) != 1 ||
+                  prev(medal_state(MEDAL_HOMELAND_SECURITY)) == 0 ||
                   !prev(omega_complete())
               )
 )
