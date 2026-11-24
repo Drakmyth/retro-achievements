@@ -350,7 +350,12 @@ function achievement_unlock_bonus(mission, title, points) {
         description = "Unlock the " + missions[mission][IDX_NAME] + " bonus mission",
         points = points,
         type = TYPE_NORMAL,
-        trigger = all_of(bonus_unlock_reqs[mission], req =>
+        trigger = is_scene(SCENE_IN_MISSION) &&
+                  prev(is_scene(SCENE_IN_MISSION)) &&
+                  player_index == prev(player_index) &&
+                  player_stats_ptr == prev(player_stats_ptr) &&
+                  mission_stats_ptr == prev(mission_stats_ptr) &&
+                  all_of(bonus_unlock_reqs[mission], req =>
                       player_best_solo_time(req) != -1 &&
                       mission_solo_par(req) >= player_best_solo_time(req)
                   ) &&
