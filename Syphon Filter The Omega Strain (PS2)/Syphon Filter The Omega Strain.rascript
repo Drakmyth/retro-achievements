@@ -522,7 +522,7 @@ achievement(
 
 function all_zeus_objectives_complete(base_addr_resolver) {
     // Fourth word includes LOR_SAVEWORKERS (ID 120) and LOR_SAMPLE (ID 126).
-    masks = [0xcb7d5dbe, 0x805a5369, 0x2c4ec420, 0x5529214b, 0x5a89da50, 0x6c61c046]
+    masks = [0xc9755cbe, 0x801a5169, 0x2c4ec420, 0x4129204b, 0x5a81da50, 0x2c61c046]
 
     complete = always_true()
     for offset in range(0, 5) {
