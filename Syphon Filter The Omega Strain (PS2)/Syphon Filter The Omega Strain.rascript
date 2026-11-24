@@ -44,7 +44,7 @@ M_BONUS = [
     M_ITALY, M_KYRGYSTAN, M_CHECHNYA, M_MONTENEGRO
 ]
 M_HIDDEN_OBJ = [
-    M_CARTHAGE2, M_BELARUS2, M_KYRGYSTAN,
+    M_CARTHAGE2, M_BELARUS1, M_BELARUS2, M_KYRGYSTAN,
     M_YEMEN1, M_ZURICH, M_MONTENEGRO
 ]
 
@@ -156,6 +156,7 @@ solo_team_objs = {
 // mission: [...objective_indices]
 hidden_objs = {
     M_CARTHAGE2: [7],
+    M_BELARUS1: [1], // Take tissue sample from cow
     M_BELARUS2: [8],
     M_KYRGYSTAN: [13, 14],
     M_YEMEN1: [8, 9],
