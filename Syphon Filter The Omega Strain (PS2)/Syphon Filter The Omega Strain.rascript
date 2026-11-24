@@ -45,7 +45,7 @@ M_BONUS = [
 ]
 M_HIDDEN_OBJ = [
     M_CARTHAGE2, M_BELARUS1, M_BELARUS2, M_KYRGYSTAN,
-    M_YEMEN1, M_ZURICH, M_MONTENEGRO
+    M_YEMEN1, M_CHECHNYA, M_ZURICH, M_MONTENEGRO
 ]
 
 TYPE_NORMAL = ""
@@ -155,13 +155,14 @@ solo_team_objs = {
 
 // mission: [...objective_indices]
 hidden_objs = {
-    M_CARTHAGE2: [7],
-    M_BELARUS1: [1], // Take tissue sample from cow
+    M_CARTHAGE2: [7], // Mujari's recorder
+    M_BELARUS1: [1], // Cow tissue sample
     M_BELARUS2: [8, 9], // Ivankov's papers; sewage sample
-    M_KYRGYSTAN: [13, 14],
-    M_YEMEN1: [8, 9],
-    M_ZURICH: [9, 10],
-    M_MONTENEGRO: [4]
+    M_KYRGYSTAN: [13, 14], // Yushchenko's papers; Zayed Al Dhahiri
+    M_YEMEN1: [8, 9], // Thae-bok Jon's credentials; Fadhil's files
+    M_CHECHNYA: [7], // Code from Ivankov's house
+    M_ZURICH: [9, 10], // ALA financial records; Birchim files
+    M_MONTENEGRO: [4] // Niculescu's files on Mara Aramov
 }
 
 bonus_unlock_reqs = {
