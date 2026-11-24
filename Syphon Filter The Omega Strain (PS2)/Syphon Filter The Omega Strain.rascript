@@ -224,6 +224,8 @@ workers_dead_ptr = dword(dword(script_variable_array_ptr + 0x27c) + 0x0c)
 workers_saved_ptr = dword(dword(script_variable_array_ptr + 0x280) + 0x0c)
 beer_crouches_ptr = dword(dword(script_variable_array_ptr + 0x390) + 0x0c)
 imani_in_end_box_ptr = dword(dword(script_variable_array_ptr + 0x254) + 0x0c)
+imani_carriers_ptr = dword(dword(dword(script_variable_array_ptr + 0x1f8) + 0x0c))
+imani_carrier_ids_ptr = dword(imani_carriers_ptr + 0x08)
 leonov_done_riding_ptr = dword(dword(script_variable_array_ptr + 0x1b4) + 0x0c)
 helicopter_fix_abort_ptr = dword(dword(script_variable_array_ptr + 0x4ec) + 0x0c)
 helicopter_fixed_ptr = dword(dword(script_variable_array_ptr + 0x4f0) + 0x0c)
@@ -261,6 +263,9 @@ function taser_past_kill_threshold() => byte(taser_mgr_ptr + 0xbc) == 0x01
 function workers_dead() => float(workers_dead_ptr)
 function workers_saved() => float(workers_saved_ptr)
 function beer_crouches() => float(beer_crouches_ptr)
+function player_object_id() => dword(player_ptr + 0x0c)
+function imani_carrier_count() => dword(imani_carriers_ptr + 0x04)
+function imani_carrier_id() => dword(imani_carrier_ids_ptr) & 0x7fffffff
 function carried_body_ptr() => dword(player_ptr + 0x3478)
 function carried_body_id() => dword(player_ptr + 0x347c)
 function carrying_imani() => carried_body_id() == GOBJ_IMANI
@@ -705,6 +710,10 @@ achievement(
               trigger_when(carried_body_ptr() != 0 && carrying_imani() && imani_in_end_box()) &&
               disable_when(
                   once(carrying_imani()) && !carrying_imani(),
+                  until = !is_mission(M_MYANMAR) || !is_scene(SCENE_IN_MISSION)
+              ) &&
+              disable_when(
+                  imani_carrier_count() > 0 && imani_carrier_id() != player_object_id(),
                   until = !is_mission(M_MYANMAR) || !is_scene(SCENE_IN_MISSION)
               )
 )
