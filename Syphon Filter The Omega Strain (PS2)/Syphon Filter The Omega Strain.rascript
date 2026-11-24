@@ -45,7 +45,7 @@ M_BONUS = [
 ]
 M_HIDDEN_OBJ = [
     M_CARTHAGE2, M_BELARUS1, M_BELARUS2, M_KYRGYSTAN,
-    M_YEMEN1, M_CHECHNYA, M_ZURICH, M_MONTENEGRO
+    M_YEMEN1, M_CHECHNYA, M_TOKYO, M_ZURICH, M_MONTENEGRO
 ]
 
 TYPE_NORMAL = ""
@@ -161,6 +161,7 @@ hidden_objs = {
     M_KYRGYSTAN: [13, 14], // Yushchenko's papers; Zayed Al Dhahiri
     M_YEMEN1: [8, 9], // Thae-bok Jon's credentials; Fadhil's files
     M_CHECHNYA: [7], // Code from Ivankov's house
+    M_TOKYO: [7, 9], // Surveillance tape; sample
     M_ZURICH: [9, 10], // ALA financial records; Birchim files
     M_MONTENEGRO: [4] // Niculescu's files on Mara Aramov
 }
