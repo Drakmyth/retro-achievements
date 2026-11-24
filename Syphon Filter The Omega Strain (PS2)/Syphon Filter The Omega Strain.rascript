@@ -221,6 +221,9 @@ workers_dead_ptr = dword(dword(script_variable_array_ptr + 0x27c) + 0x0c)
 workers_saved_ptr = dword(dword(script_variable_array_ptr + 0x280) + 0x0c)
 beer_crouches_ptr = dword(dword(script_variable_array_ptr + 0x390) + 0x0c)
 imani_in_end_box_ptr = dword(dword(script_variable_array_ptr + 0x254) + 0x0c)
+leonov_done_riding_ptr = dword(dword(script_variable_array_ptr + 0x1b4) + 0x0c)
+helicopter_fix_abort_ptr = dword(dword(script_variable_array_ptr + 0x4ec) + 0x0c)
+helicopter_fixed_ptr = dword(dword(script_variable_array_ptr + 0x4f0) + 0x0c)
 function game_mode() => byte(0x5721c8)
 function current_scene() => byte(0x4ffba0)
 function current_mission() => dword(0x494198)
@@ -259,6 +262,9 @@ function carried_body_ptr() => dword(player_ptr + 0x3478)
 function carried_body_id() => dword(player_ptr + 0x347c)
 function carrying_imani() => carried_body_id() == GOBJ_IMANI
 function imani_in_end_box() => dword(imani_in_end_box_ptr) == 1
+function leonov_done_riding() => dword(leonov_done_riding_ptr)
+function helicopter_fix_abort() => dword(helicopter_fix_abort_ptr)
+function helicopter_fixed() => dword(helicopter_fixed_ptr)
 function mission_solo_par(mission) {
     // Training doesn't have a defined solo par, so we make one up
     if (mission == M_TRAINING)
@@ -734,6 +740,20 @@ achievement(
                   mission_kills() >= 16 &&
                   mission_headshots() >= 16
               )
+)
+
+achievement(
+    title = "A Surprise for Leonov",
+    description = "Interrupt Leonov's chopper escape in UKRAINE",
+    points = 5,
+    type = TYPE_NORMAL,
+    trigger = is_mission(M_UKRAINE) &&
+              is_scene(SCENE_IN_MISSION) &&
+              objective_status(1) == OBJ_COMPLETE &&
+              leonov_done_riding() == 1 &&
+              helicopter_fix_abort() == 1 &&
+              prev(helicopter_fix_abort()) == 0 &&
+              helicopter_fixed() == 0
 )
 
 achievement_bythebook(M_TRAINING, 10)
