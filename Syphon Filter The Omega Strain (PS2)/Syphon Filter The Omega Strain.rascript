@@ -538,7 +538,13 @@ achievement(
     description = "Unlock all the Zeus Files",
     points = 5,
     type = TYPE_NORMAL,
-    trigger = all_zeus_objectives_complete(dword) &&
+    trigger = is_scene(SCENE_IN_MISSION) &&
+              prev(is_scene(SCENE_IN_MISSION)) &&
+              player_index == prev(player_index) &&
+              player_stats_ptr == prev(player_stats_ptr) &&
+              dword(player_stats_ptr + 0xad0) == prev(dword(player_stats_ptr + 0xad0)) &&
+              dword(player_stats_ptr + 0xaf0) == prev(dword(player_stats_ptr + 0xaf0)) &&
+              all_zeus_objectives_complete(dword) &&
               medal_state(MEDAL_HOMELAND_SECURITY) != 0 &&
               omega_complete() &&
               (
