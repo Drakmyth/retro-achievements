@@ -549,18 +549,20 @@ function can_earn_cure() {
            omega_array_ptr == prev(omega_array_ptr)
 }
 
+function cure_was_incomplete() => prev(num_complete_omega() < 10) || !prev(omega_complete())
+
 achievement(
     title = "The Cure Is Working",
     description = "Cure the Omega Strain",
     points = 5,
     type = TYPE_NORMAL,
     trigger = can_earn_cure() &&
-              measured(num_complete_omega() == 10, when=can_earn_cure(), format="percent") &&
+              measured(num_complete_omega() == 10, when=
+                  can_earn_cure() && (num_complete_omega() < 10 || cure_was_incomplete()),
+                  format="percent"
+              ) &&
               omega_complete() &&
-              (
-                  prev(num_complete_omega() < 10) ||
-                  !prev(omega_complete())
-              )
+              cure_was_incomplete()
 )
 
 function all_zeus_objectives_complete(base_addr_resolver) {
