@@ -557,12 +557,21 @@ achievement(
     points = 5,
     type = TYPE_NORMAL,
     trigger = can_earn_cure() &&
-              measured(num_complete_omega() == 10, when=
-                  can_earn_cure() && (num_complete_omega() < 10 || cure_was_incomplete()),
-                  format="percent"
-              ) &&
-              omega_complete() &&
-              cure_was_incomplete()
+              (
+                  (
+                      num_complete_omega() == 10 &&
+                      omega_complete() &&
+                      cure_was_incomplete()
+                  ) ||
+                  // Progress cannot unlock; header completion may follow the increase.
+                  (
+                      measured(num_complete_omega() == 10, when=
+                          num_complete_omega() > prev(num_complete_omega()),
+                          format="percent"
+                      ) &&
+                      trigger_when(always_false())
+                  )
+              )
 )
 
 function all_zeus_objectives_complete(base_addr_resolver) {
