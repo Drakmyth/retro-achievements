@@ -416,18 +416,13 @@ function achievement_rating(rating, tier, points) {
 }
 
 function achievement_award(award, title, points) {
-    earning_context = is_scene(SCENE_FADE_OUT)
-    progress_context = always_true()
-    if (award == AWARD_MEDALS || award == AWARD_COMMENDATIONS) {
-        // These award headers share mission-end processing before fade-out.
-        earning_context = is_scene(SCENE_IN_MISSION) &&
-                          prev(is_scene(SCENE_IN_MISSION)) &&
-                          player_index == prev(player_index) &&
-                          player_stats_ptr == prev(player_stats_ptr) &&
-                          dword(player_stats_ptr + awards[award][IDX_ARRAY_OFFSET]) ==
-                              prev(dword(player_stats_ptr + awards[award][IDX_ARRAY_OFFSET]))
-        progress_context = earning_context
-    }
+    // All three award categories share mission-end processing before fade-out.
+    earning_context = is_scene(SCENE_IN_MISSION) &&
+                      prev(is_scene(SCENE_IN_MISSION)) &&
+                      player_index == prev(player_index) &&
+                      player_stats_ptr == prev(player_stats_ptr) &&
+                      dword(player_stats_ptr + awards[award][IDX_ARRAY_OFFSET]) ==
+                          prev(dword(player_stats_ptr + awards[award][IDX_ARRAY_OFFSET]))
 
     achievement(
         title = title,
@@ -435,7 +430,7 @@ function achievement_award(award, title, points) {
         points = points,
         type = TYPE_NORMAL,
         trigger = earning_context &&
-                  measured(num_complete_awards(award) == awards[award][IDX_COUNT], when=progress_context) &&
+                  measured(num_complete_awards(award) == awards[award][IDX_COUNT], when=earning_context) &&
                   prev(num_complete_awards(award) < awards[award][IDX_COUNT])
     )
 }
