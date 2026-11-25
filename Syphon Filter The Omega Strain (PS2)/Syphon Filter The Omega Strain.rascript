@@ -418,8 +418,8 @@ function achievement_rating(rating, tier, points) {
 function achievement_award(award, title, points) {
     earning_context = is_scene(SCENE_FADE_OUT)
     progress_context = always_true()
-    if (award == AWARD_MEDALS) {
-        // Medal headers qualify during mission-end processing, before fade-out.
+    if (award == AWARD_MEDALS || award == AWARD_COMMENDATIONS) {
+        // These award headers share mission-end processing before fade-out.
         earning_context = is_scene(SCENE_IN_MISSION) &&
                           prev(is_scene(SCENE_IN_MISSION)) &&
                           player_index == prev(player_index) &&
