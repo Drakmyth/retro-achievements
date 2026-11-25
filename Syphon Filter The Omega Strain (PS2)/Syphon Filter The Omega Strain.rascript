@@ -416,13 +416,26 @@ function achievement_rating(rating, tier, points) {
 }
 
 function achievement_award(award, title, points) {
+    earning_context = is_scene(SCENE_FADE_OUT)
+    progress_context = always_true()
+    if (award == AWARD_MEDALS) {
+        // Medal headers qualify during mission-end processing, before fade-out.
+        earning_context = is_scene(SCENE_IN_MISSION) &&
+                          prev(is_scene(SCENE_IN_MISSION)) &&
+                          player_index == prev(player_index) &&
+                          player_stats_ptr == prev(player_stats_ptr) &&
+                          dword(player_stats_ptr + awards[award][IDX_ARRAY_OFFSET]) ==
+                              prev(dword(player_stats_ptr + awards[award][IDX_ARRAY_OFFSET]))
+        progress_context = earning_context
+    }
+
     achievement(
         title = title,
         description = "Earn all of the " + awards[award][IDX_AWARD_NAME],
         points = points,
         type = TYPE_NORMAL,
-        trigger = is_scene(SCENE_FADE_OUT) &&
-                  measured(num_complete_awards(award) == awards[award][IDX_COUNT]) &&
+        trigger = earning_context &&
+                  measured(num_complete_awards(award) == awards[award][IDX_COUNT], when=progress_context) &&
                   prev(num_complete_awards(award) < awards[award][IDX_COUNT])
     )
 }
