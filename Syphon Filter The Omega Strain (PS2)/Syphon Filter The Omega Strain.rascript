@@ -693,9 +693,13 @@ achievement(
     points = 5,
     type = TYPE_NORMAL,
     trigger = is_mission(M_ITALY) &&
+              is_scene_any_of([SCENE_IN_MISSION, SCENE_FADE_OUT]) &&
               trigger_when(on_mission_end()) &&
               is_mission_end_state(END_SUCCESS) &&
-              measured(mission_kills() >= 16)
+              measured(mission_kills() >= 16, when=
+                  is_mission(M_ITALY) &&
+                  is_scene_any_of([SCENE_IN_MISSION, SCENE_FADE_OUT])
+              )
 )
 
 function workers_started_despawning() => workers_saved() > 0 && prev(workers_saved()) == 0
@@ -721,9 +725,13 @@ achievement(
     points = 5,
     type = TYPE_NORMAL,
     trigger = is_mission(M_KYRGYSTAN) &&
+              is_scene_any_of([SCENE_IN_MISSION, SCENE_FADE_OUT]) &&
               trigger_when(on_mission_end()) &&
               is_mission_end_state(END_SUCCESS) &&
-              measured(mission_kills() >= 23)
+              measured(mission_kills() >= 23, when=
+                  is_mission(M_KYRGYSTAN) &&
+                  is_scene_any_of([SCENE_IN_MISSION, SCENE_FADE_OUT])
+              )
 )
 
 achievement(
