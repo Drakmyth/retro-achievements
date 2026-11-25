@@ -526,14 +526,27 @@ achievement_award(AWARD_SRATINGS, "One of the Elite", 5)
 achievement_award(AWARD_COMMENDATIONS, "Permanent Record", 5)
 achievement_award(AWARD_MEDALS, "Beyond the Call", 5)
 
+function can_earn_cure() {
+    return is_scene(SCENE_IN_MISSION) &&
+           prev(is_scene(SCENE_IN_MISSION)) &&
+           player_index == prev(player_index) &&
+           player_stats_ptr == prev(player_stats_ptr) &&
+           dword(player_stats_ptr + 0xaf0) == prev(dword(player_stats_ptr + 0xaf0)) &&
+           omega_array_ptr == prev(omega_array_ptr)
+}
+
 achievement(
     title = "The Cure Is Working",
     description = "Cure the Omega Strain",
     points = 5,
     type = TYPE_NORMAL,
-    trigger = is_scene(SCENE_FADE_OUT) &&
-              measured(num_complete_omega() == 10, format="percent") &&
-              prev(num_complete_omega() < 10)
+    trigger = can_earn_cure() &&
+              measured(num_complete_omega() == 10, when=can_earn_cure(), format="percent") &&
+              omega_complete() &&
+              (
+                  prev(num_complete_omega() < 10) ||
+                  !prev(omega_complete())
+              )
 )
 
 function all_zeus_objectives_complete(base_addr_resolver) {
