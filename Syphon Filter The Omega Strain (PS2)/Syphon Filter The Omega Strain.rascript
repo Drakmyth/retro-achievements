@@ -238,6 +238,8 @@ function mission_end_state() => byte(0x4ffd15) + (byte(0x4ffd14) * 2) // No <<, 
 function player_health() => float(player_ptr + 0x40)
 function player_health_max() => dword(player_ptr + 0x3398)
 function player_rank() => dword(rank_object_ptr + 0x4)
+// Rank definitions persist; promotion changes the profile's pointer, not the record's index.
+function previous_player_rank() => dword(prev(rank_object_ptr) + 0x4)
 function player_rating(rating) => dword(player_stats_ptr + ratings[rating][IDX_OFFSET])
 function player_best_solo_time(mission) => dword(mission_stats_ptr + (mission * 32))
 function player_best_team_time(mission) => dword(mission_stats_ptr + (mission * 32) + 0x4)
@@ -388,15 +390,22 @@ function achievement_rank(rank, title, points) {
     }
     
     description = "Reach Rank " + rank_num + " - " + rank_name + or_higher
-    
+
+    earning_context = is_scene(SCENE_IN_MISSION) &&
+                      prev(is_scene(SCENE_IN_MISSION)) &&
+                      player_index == prev(player_index) &&
+                      player_stats_ptr == prev(player_stats_ptr) &&
+                      rank_object_ptr != 0 &&
+                      prev(rank_object_ptr) != 0
+
     achievement(
         title = title,
         description = description,
         points = points,
         type = TYPE_NORMAL,
-        trigger = is_scene(SCENE_FADE_OUT) &&
-                  measured(player_rank() >= rank) &&
-                  prev(player_rank()) < rank
+        trigger = earning_context &&
+                  measured(player_rank() >= rank, when=earning_context) &&
+                  previous_player_rank() < rank
     )
 }
 
