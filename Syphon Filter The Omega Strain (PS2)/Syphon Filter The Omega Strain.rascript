@@ -413,13 +413,18 @@ function achievement_rating(rating, tier, points) {
     title = tiers[tier] + " " + ratings[rating][IDX_RATING_TITLE]
     description = ratings[rating][IDX_PREFIX] + ratings[rating][tier] + ratings[rating][IDX_SUFFIX]
 
+    earning_context = is_scene(SCENE_IN_MISSION) &&
+                      prev(is_scene(SCENE_IN_MISSION)) &&
+                      player_index == prev(player_index) &&
+                      player_stats_ptr == prev(player_stats_ptr)
+
     achievement(
         title = title,
         description = description,
         points = points,
         type = TYPE_NORMAL,
-        trigger = is_scene(SCENE_IN_MISSION) &&
-                  measured(player_rating(rating) >= ratings[rating][tier]) &&
+        trigger = earning_context &&
+                  measured(player_rating(rating) >= ratings[rating][tier], when=earning_context) &&
                   prev(player_rating(rating)) < ratings[rating][tier]
     )
 }
