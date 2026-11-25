@@ -315,7 +315,15 @@ function is_mission(mission) => current_mission() == mission
 function is_singleplayer() => game_mode() == 0x00
 function is_multiplayer() => game_mode() == 0x01
 function is_mission_end_state(state) => mission_end_state() == state
-function num_complete_awards(award) => sum_of(range(0, awards[award][IDX_COUNT] - 1), index => byte(dword(player_stats_ptr + awards[award][IDX_ARRAY_OFFSET]) + (index * 20)))
+function num_complete_awards(award) {
+    // Valid header states are 0, 1, and 2; either set bit contributes one award.
+    count = 0
+    for index in range(0, awards[award][IDX_COUNT] - 1) {
+        addr = dword(player_stats_ptr + awards[award][IDX_ARRAY_OFFSET]) + (index * 20)
+        count = count + bit0(addr) + bit1(addr)
+    }
+    return count
+}
 function medal_state(medal) => byte(dword(player_stats_ptr + awards[AWARD_MEDALS][IDX_ARRAY_OFFSET]) + (medal * 20))
 // Integer division on omega_array_ptr bytes effectively treats 0x00 and 0x01 as 0x00, and 0x02 as 0x01
 function num_complete_omega() => sum_of(range(0, 9), index => byte(omega_array_ptr + index) / 2)
