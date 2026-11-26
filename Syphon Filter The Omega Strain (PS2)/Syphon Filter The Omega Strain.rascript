@@ -404,8 +404,16 @@ function achievement_rank(rank, title, points) {
         points = points,
         type = TYPE_NORMAL,
         trigger = earning_context &&
-                  measured(player_rank() >= rank, when=earning_context) &&
-                  previous_player_rank() < rank
+                  (
+                      (player_rank() >= rank && previous_player_rank() < rank) ||
+                      (
+                          measured(player_rank() >= rank, when=
+                              earning_context &&
+                              player_rank() > previous_player_rank() && previous_player_rank() < rank
+                          ) &&
+                          trigger_when(always_false())
+                      )
+                  )
     )
 }
 
@@ -424,8 +432,20 @@ function achievement_rating(rating, tier, points) {
         points = points,
         type = TYPE_NORMAL,
         trigger = earning_context &&
-                  measured(player_rating(rating) >= ratings[rating][tier], when=earning_context) &&
-                  prev(player_rating(rating)) < ratings[rating][tier]
+                  (
+                      (
+                          player_rating(rating) >= ratings[rating][tier] &&
+                          prev(player_rating(rating)) < ratings[rating][tier]
+                      ) ||
+                      (
+                          measured(player_rating(rating) >= ratings[rating][tier], when=
+                              earning_context &&
+                              player_rating(rating) > prev(player_rating(rating)) &&
+                              prev(player_rating(rating)) < ratings[rating][tier]
+                          ) &&
+                          trigger_when(always_false())
+                      )
+                  )
     )
 }
 
@@ -444,8 +464,19 @@ function achievement_award(award, title, points) {
         points = points,
         type = TYPE_NORMAL,
         trigger = earning_context &&
-                  measured(num_complete_awards(award) == awards[award][IDX_COUNT], when=earning_context) &&
-                  prev(num_complete_awards(award) < awards[award][IDX_COUNT])
+                  (
+                      (
+                          num_complete_awards(award) == awards[award][IDX_COUNT] &&
+                          prev(num_complete_awards(award) < awards[award][IDX_COUNT])
+                      ) ||
+                      (
+                          measured(num_complete_awards(award) == awards[award][IDX_COUNT], when=
+                              earning_context &&
+                              num_complete_awards(award) > prev(num_complete_awards(award))
+                          ) &&
+                          trigger_when(always_false())
+                      )
+                  )
     )
 }
 
@@ -566,6 +597,7 @@ achievement(
                   // Progress cannot unlock; header completion may follow the increase.
                   (
                       measured(num_complete_omega() == 10, when=
+                          can_earn_cure() &&
                           num_complete_omega() > prev(num_complete_omega()),
                           format="percent"
                       ) &&
