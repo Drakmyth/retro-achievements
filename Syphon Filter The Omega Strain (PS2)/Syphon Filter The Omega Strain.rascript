@@ -792,7 +792,17 @@ achievement(
                       is_mission_end_state(END_SUCCESS) &&
                       mission_non_lethal() >= 25
                   ) ||
-                  (measured(mission_non_lethal() >= 25) && trigger_when(always_false()))
+                  (
+                      measured(mission_non_lethal() >= 25, when=
+                          is_mission(M_CHECHNYA) &&
+                          is_scene_any_of([SCENE_IN_MISSION, SCENE_FADE_OUT]) &&
+                          prev(is_scene(SCENE_IN_MISSION)) &&
+                          player_index == prev(player_index) &&
+                          player_stats_ptr == prev(player_stats_ptr) &&
+                          mission_non_lethal() > prev(mission_non_lethal())
+                      ) &&
+                      trigger_when(always_false())
+                  )
               ) &&
               disable_when(
                   is_scene(SCENE_IN_MISSION) &&
