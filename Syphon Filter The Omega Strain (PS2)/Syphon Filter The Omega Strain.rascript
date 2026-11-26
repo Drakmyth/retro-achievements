@@ -857,6 +857,7 @@ achievement(
                   once(player_has_weapon(WEAPON_RIOT_SHOTGUN)),
                   once(player_has_weapon(WEAPON_RIOT_PISTOL))
               ), when = once(
+                  is_mission(M_ZURICH) &&
                   is_scene(SCENE_IN_MISSION) &&
                   prev(is_scene(SCENE_EQUIPMENT_SELECT)) &&
                   all_of(ZURICH_NON_LETHAL_WEAPONS, weapon => !player_has_weapon(weapon))
